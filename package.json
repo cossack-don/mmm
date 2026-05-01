@@ -9,8 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/vue-query": "^5.100.7",
+    "@tanstack/vue-query-devtools": "^6.1.26",
     "axios": "^1.15.2",
-    "vue": "^3.5.32"
+    "vue": "^3.5.32",
+    "vue-router": "^5.0.6"
   },
   "devDependencies": {
     "@types/node": "^24.12.2",
