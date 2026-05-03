@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Spinner } from "../../components/ui";
+import { useRouter } from "vue-router";
+import { onUpdated } from "vue";
 
 interface IProps {
   isLoading: boolean;
@@ -12,28 +14,34 @@ const props = withDefaults(defineProps<IProps>(), {
   isError: false,
   isSuccess: false,
 });
+
+const router = useRouter();
+
+onUpdated(() => {
+  if (props.isError) router.push({ name: "home" });
+});
 </script>
 
 <template>
-  <div :class="{ 'loading-app': props.isLoading }">
+  <div :class="{ 'app-loading': props.isLoading }" class="life-cycle-app">
     <Spinner v-if="props.isLoading" />
 
-    <div v-else-if="props.isError">
+    <template v-else-if="props.isError">
       <slot name="error" />
-    </div>
+    </template>
 
-    <div v-else-if="props.isSuccess">
+    <template v-else-if="props.isSuccess">
       <slot name="success" />
-    </div>
+    </template>
 
-    <div v-else>
+    <template v-else>
       <slot name="else" />
-    </div>
+    </template>
   </div>
 </template>
 
 <style scoped>
-.loading-app {
+.app-loading {
   display: flex;
   flex-direction: column;
   justify-content: center;

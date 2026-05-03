@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onMounted, onUpdated, ref } from "vue";
-import { serviceTodos } from "./api/serviceTodos";
-import { LifeCyclePage, ErrorPage } from "./components/pages";
-import { useStatusesLifeCycle } from "./composables";
+import { serviceTodos } from "../../api/serviceTodos";
+import { LifeCyclePage, ErrorPage } from "../../components/pages";
+import { useStatusesLifeCycle } from "../../composables";
+
+import BasePage from "../../BasePage.vue";
 
 const {
   isError,
@@ -59,50 +61,26 @@ onMounted(() => {
     </template>
 
     <template #success>
-      <h2>Какую цель и ценность проекта я приследую, трачу время на что ???</h2>
-
-      <ul>
-        <li>Изучить Vue Query</li>
-        <li>
-          Хочу продукт который бы помогал людям - моя миссия помощь другим
-        </li>
-        <li>Практика Frontend + эксперементы</li>
-        <li></li>
-        <li></li>
-      </ul>
-
-      <br />
-      <br />
-      <br />
-      <br />
-
-      <div
-        style="
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          background-color: #40b883;
-          margin-bottom: 40px;
-        "
-      >
-        <input placeholder="Имя" type="text" v-model="stateName" />
-        <input placeholder="Описание" type="text" v-model="stateDescription" />
-        <button @click="controllerTodoList.createTodo">Создать</button>
-      </div>
-
-      <div
+      <router-link
+        :to="`/project/${item.id}/`"
         v-for="item in listTodos"
         :key="item.id"
-        style="background: greenyellow; padding: 15px; margin-bottom: 20px"
+        style="
+          display: block;
+          background: greenyellow;
+          padding: 15px;
+          margin-bottom: 20px;
+        "
       >
         <p>ID: {{ item.id }}</p>
         <p>Name: {{ item.name }}</p>
         <p>Description: {{ item.description }}</p>
+      </router-link>
 
-        <button @click="controllerTodoList.deleteByIdTodo(item.id)">
-          Delete
-        </button>
-      </div>
+      <hr />
+      <br />
+      <br />
+      <BasePage />
     </template>
 
     <template #else> ELSE PAGE</template>

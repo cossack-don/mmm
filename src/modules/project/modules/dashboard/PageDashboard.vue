@@ -1,0 +1,1 @@
+<template>page dashboard</template>
