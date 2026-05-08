@@ -294,7 +294,7 @@ const onPickedOptionsTargets = async (id, idTarget, name) => {
 
 const onPickedOptionsTask = async (id, idTask, name) => {
   if (id === 1) {
-    await controllerCaseYearTask.deleteById(route.params.idProject, idTask);
+    await controllerCaseYearTask.deleteItemById(idTask);
   } else if (id === 2) {
     openModalTwo(idTask, name);
   }
