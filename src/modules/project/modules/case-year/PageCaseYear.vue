@@ -1,39 +1,50 @@
 <script setup lang="ts">
 import { computed, watch, onMounted, ref } from "vue";
-import { Modal } from "../../../../components/ui";
-
+import { Modal, Card, Button, DropDown } from "../../../../components/ui";
+import { serviceCaseYear } from "../../../../api";
+import { useRoute } from "vue-router";
+import { serviceCaseYearTargets } from "../../../../api/services";
 const list = ref([[], [], [], []]);
 
-const getList = async () => {
-  list.value = [[], [], [], []];
+const route = useRoute();
 
-  const res = await fetch("http://localhost:3000/project/3/case-year");
-  const resJson = await res.json();
+const controllerCaseYearTask = {
+  getList: async () => {
+    list.value = [[], [], [], []];
 
-  resJson.forEach((item) => {
-    if (item.keyQ === "Q1") {
-      list.value[0].push(item);
-    } else if (item.keyQ === "Q2") {
-      list.value[1].push(item);
-    } else if (item.keyQ === "Q3") {
-      list.value[2].push(item);
-    } else if (item.keyQ === "Q4") {
-      list.value[3].push(item);
-    }
-  });
-};
+    const { data } = await serviceCaseYear.getList(route.params.idProject);
 
-const deleteItemById = async (id: number) => {
-  await fetch(`http://localhost:3000/project/3/case-year/${id}`, {
-    method: "DELETE",
-  });
+    data.forEach((item) => {
+      if (item.keyQ === "Q1") {
+        list.value[0].push(item);
+      } else if (item.keyQ === "Q2") {
+        list.value[1].push(item);
+      } else if (item.keyQ === "Q3") {
+        list.value[2].push(item);
+      } else if (item.keyQ === "Q4") {
+        list.value[3].push(item);
+      }
+    });
+  },
+  deleteItemById: async (id: any) => {
+    await serviceCaseYear.deleteById(route.params.idProject, id);
+    await controllerCaseYearTask.getList();
+  },
+  putById: async (idTask) => {
+    await serviceCaseYear.putById(
+      route.params.idProject as string,
+      idTask,
+      stateModalName.value,
+    );
 
-  await getList();
+    idEditElement.value = null;
+    stateModalName.value = "";
+  },
 };
 
 onMounted(() => {
-  getList();
-  getListTargets();
+  controllerCaseYearTask.getList();
+  controllerCaseYearTargets.getList(route.params.idProject);
 });
 
 //Q1
@@ -165,9 +176,6 @@ const openModalTwo = (id, nameTask) => {
   stateModalName.value = nameTask;
 };
 
-const f = computed(() => {
-  return 1;
-});
 const formDataCreateTask = ref({
   month: null,
   name: "",
@@ -175,41 +183,19 @@ const formDataCreateTask = ref({
 });
 
 const handleConfirm = async () => {
-  formDataCreateTask.value.name = stateModalName.value;
-  formDataCreateTask.value.keyQ = `Q${pickedQ.value}`;
-  formDataCreateTask.value.month = pickedMonth.value;
-  // Ваша логика
-
-  const res = await fetch("http://localhost:3000/project/3/case-year", {
-    method: "POST",
-    body: JSON.stringify(formDataCreateTask.value),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  await getList();
-};
-
-const putTask = async () => {
-  const res = await fetch(
-    `http://localhost:3000/project/3/case-year/${idEditElement.value}`,
-    {
-      method: "PUT",
-      body: JSON.stringify({ name: stateModalName.value }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
+  await serviceCaseYear.createTaskQ(
+    route.params.idProject as string,
+    stateModalName.value,
+    `Q${pickedQ.value}`,
+    pickedMonth.value,
   );
 
-  idEditElement.value = null;
-  stateModalName.value = "";
+  await controllerCaseYearTask.getList();
 };
 
 const handleConfirmTwo = async () => {
-  await putTask();
-  await getList();
+  await controllerCaseYearTask.putById(idEditElement.value);
+  await controllerCaseYearTask.getList();
 };
 
 const currentListMonths = computed(() => {
@@ -230,69 +216,80 @@ const currentListMonths = computed(() => {
   }
 });
 
-const selectQuarter = (quarterNumber) => {
-  const filtered = optionsMonth.value.filter(
-    (item) => item.keyQ === `Q${quarterNumber}`,
-  );
-  if (filtered[0]) {
-    pickedQ.value = filtered[0].id;
-  }
-};
-
-// watch(
-//   [optionsMonth],
-//   () => {
-//     // console.log(pickedQ.value, optionsMonth.value);
-//     // console.log(currentListMonths.value[0].keyQ);
-//     if (currentListMonths.value[0].keyQ === "Q1") {
-//       pickedQ.value = currentListMonths.value[0].id;
-//     } else if (currentListMonths.value[0].keyQ === "Q2") {
-//       // console.log(currentListMonths.value[0]);
-//       pickedQ.value = { id: 4, name: "Яц" };
-//     } else if (currentListMonths.value[0].keyQ === "Q3") {
-//     } else if (currentListMonths.value[0].keyQ === "Q4") {
-//     }
-//   },
-//   { immediate: true },
-// );
-
 const isModalOpenThree = ref(false);
 const openModalThree = () => {
   isModalOpenThree.value = true;
 };
 
 const handleConfirmThree = async () => {
-  const res = await fetch("http://localhost:3000/project/3/case-year-targets", {
-    method: "POST",
-    body: JSON.stringify({ name: stateModalName.value }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const resJson = await res.json();
-  await getListTargets();
+  await controllerCaseYearTargets.createTarget(
+    route.params.idProject,
+    stateModalName.value,
+  );
+  await controllerCaseYearTargets.getList(route.params.idProject);
 };
 
 const listYearTargets = ref([]);
-const getListTargets = async () => {
-  const res = await fetch("http://localhost:3000/project/3/case-year-targets");
-  const resJson = await res.json();
 
-  listYearTargets.value = resJson;
+const controllerCaseYearTargets = {
+  getList: async (idProject: any) => {
+    const { data } = await serviceCaseYearTargets.getList(idProject);
+    listYearTargets.value = data;
+  },
+  deleteById: async (idProject: any, idTarget: any) => {
+    await serviceCaseYearTargets.deleteById(idProject, idTarget);
+    await controllerCaseYearTargets.getList(idProject);
+  },
+  putById: async (idProject: any, idTarget: any, name: any) => {
+    await serviceCaseYearTargets.putById(idProject, idTarget, name);
+  },
+
+  createTarget: async (idProject: any, name: any) => {
+    await serviceCaseYearTargets.createTarget(idProject, name);
+  },
+};
+const onPickedOptionsTargets = async (id, idTarget) => {
+  if (id === 1) {
+    await controllerCaseYearTargets.deleteById(
+      route.params.idProject,
+      idTarget,
+    );
+  } else if (id === 2) {
+    //не доделал
+    // await controllerCaseYearTargets.putById(
+    //   route.params.idProject,
+    //   idTarget,
+    //   null,
+    // );
+  }
+};
+
+// <button @click="openModalTwo(item.id, item.name)">
+//   EDIT
+//   </button>
+const onPickedOptionsTask = async (id, idTask, name) => {
+  if (id === 1) {
+    await controllerCaseYearTask.deleteById(route.params.idProject, idTask);
+  } else if (id === 2) {
+    openModalTwo(idTask, name);
+    //не доделал
+    // await controllerCaseYearTask.putById(
+    //   route.params.idProject,
+    //   idTask,
+    //   null,
+    // );
+  }
 };
 </script>
 
 <template>
   <div>
-    <button @click="openModal">create new task year</button>
-
     <Modal
       v-model="isModalOpen"
       title="Простое модальное окно"
       @confirm="handleConfirm"
     >
       <p>Это содержимое модального окна</p>
-      {{ stateModalName }}
       <input v-model="stateModalName" placeholder="Название задачи" />
 
       <div>
@@ -337,179 +334,266 @@ const getListTargets = async () => {
       <input v-model="stateModalName" placeholder="Название цели" />
     </Modal>
 
-    <div style="margin-bottom: 100px">
-      <h4>дела на год 2026</h4>
+    <Card style="margin-bottom: 40px" :styles="{ width: '100%' }">
+      <template #default>
+        <h4>Дела на год 2026</h4>
 
-      <button @click="openModalThree">create</button>
+        <Button @click="openModalThree">Создание цели</Button>
 
-      <div style="display: flex">
-        <div
-          style="padding: 10px; background: gray; margin-right: 20px"
-          v-for="item in listYearTargets"
-        >
-          {{ item.name }}
+        <div style="display: flex; flex-wrap: wrap">
+          <Card
+            style="margin: 10px; display: flex; align-items: center"
+            v-for="item in listYearTargets"
+            :key="item.id"
+          >
+            <template #default>
+              <p>{{ item.name }}</p>
+              <DropDown
+                @onClick="({ id }) => onPickedOptionsTargets(id, item.id)"
+              />
+            </template>
+          </Card>
         </div>
-      </div>
-    </div>
+      </template>
+    </Card>
 
-    <h4>
-      При создании должно быть params - Q1/Q2/Q3/Q4 + month номер 1-12 месяц +
-      название задачи
-    </h4>
+    <h4>Планы на 4-е квартала</h4>
+
+    <Button @click="openModal">Создание задачи</Button>
+    <br />
 
     <div style="display: flex; flex-wrap: wrap">
-      <div style="width: 50%">
-        <h4 style="text-align: center">Q1</h4>
-        <div
-          style="
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 100px;
-          "
-        >
-          <div>
-            <p>Январь</p>
-            <ul v-for="item in firstMonth">
-              <li>
-                {{ item.name }}
-                <button @click="deleteItemById(item.id)">DEL</button>
-                <button @click="openModalTwo(item.id, item.name)">EDIT</button>
-              </li>
-            </ul>
-          </div>
+      <Card
+        style="width: 48%; height: 300px; margin-right: 5px; margin-bottom: 5px"
+      >
+        <template #default>
+          <h4 style="text-align: center">Q1</h4>
+          <div
+            style="
+              display: flex;
+              justify-content: space-around;
+              margin-bottom: 100px;
+            "
+          >
+            <Card>
+              <template #default>
+                <p style="font-weight: bold">Январь</p>
+                <ul v-for="item in firstMonth">
+                  <li>
+                    {{ item.name }}
+                    <DropDown
+                      @onClick="
+                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
+                      "
+                    />
+                  </li>
+                </ul>
+              </template>
+            </Card>
 
-          <div>
-            <p>Февраль</p>
-            <ul v-for="item in secondMonth">
-              <li>
-                {{ item.name }}
-                <button @click="deleteItemById(item.id)">DEL</button>
-              </li>
-            </ul>
-          </div>
+            <Card>
+              <template #default>
+                <p style="font-weight: bold">Февраль</p>
+                <ul v-for="item in secondMonth">
+                  <li>
+                    {{ item.name }}
+                    <DropDown
+                      @onClick="
+                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
+                      "
+                    />
+                  </li></ul
+              ></template>
+            </Card>
 
-          <div>
-            <p>Март</p>
-            <ul v-for="item in thorMonth">
-              <li>
-                {{ item.name }}
-                <button @click="deleteItemById(item.id)">DEL</button>
-              </li>
-            </ul>
+            <Card>
+              <template #default>
+                <p style="font-weight: bold">Март</p>
+                <ul v-for="item in thorMonth">
+                  <li>
+                    {{ item.name }}
+                    <DropDown
+                      @onClick="
+                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
+                      "
+                    />
+                  </li>
+                </ul>
+              </template>
+            </Card>
           </div>
-        </div>
-      </div>
+        </template>
+      </Card>
 
-      <div style="width: 50%">
-        <h4 style="text-align: center">Q2</h4>
-        <div
-          style="
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 100px;
-          "
-        >
-          <div>
-            <p>Апрель</p>
-            <ul v-for="item in forMonth">
-              <li>
-                {{ item.name }}
-                <button @click="deleteItemById(item.id)">DEL</button>
-              </li>
-            </ul>
-          </div>
+      <Card style="width: 50%; height: 300px; margin-bottom: 5px">
+        <template #default>
+          <h4 style="text-align: center">Q2</h4>
+          <div
+            style="
+              display: flex;
+              justify-content: space-around;
+              margin-bottom: 100px;
+            "
+          >
+            <Card style="width: 100%">
+              <template #default>
+                <p style="font-weight: bold">Апрель</p>
+                <ul v-for="item in forMonth">
+                  <li style="font-size: 12px">
+                    {{ item.name }}
+                    <DropDown
+                      @onClick="
+                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
+                      "
+                    />
+                  </li>
+                </ul>
+              </template>
+            </Card>
 
-          <div>
-            <p>Май</p>
-            <ul v-for="item in fiveMonth">
-              <li>
-                {{ item.name }}
-                <button @click="deleteItemById(item.id)">DEL</button>
-              </li>
-            </ul>
+            <Card style="width: 100%">
+              <template #default>
+                <p style="font-weight: bold">Май</p>
+                <ul v-for="(item, index) in fiveMonth">
+                  <li style="font-size: 12px">
+                    {{ index + 1 }} - {{ item.name }}
+                    <DropDown
+                      @onClick="
+                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
+                      "
+                    />
+                  </li>
+                </ul>
+              </template>
+            </Card>
+            <Card style="width: 100%">
+              <template #default>
+                <p style="font-weight: bold">Июнь</p>
+                <ul v-for="(item, index) in sixMonth">
+                  <li style="font-size: 12px">
+                    {{ index + 1 }} - {{ item.name }}
+                    <DropDown
+                      @onClick="
+                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
+                      "
+                    />
+                  </li>
+                </ul>
+              </template>
+            </Card>
           </div>
+        </template>
+      </Card>
 
-          <div>
-            <p>Июнь</p>
-            <ul v-for="item in sixMonth">
-              <li>
-                {{ item.name }}
-                <button @click="deleteItemById(item.id)">DEL</button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <Card style="width: 48%; height: 300px; margin-right: 5px">
+        <template #default>
+          <h4 style="text-align: center">Q3</h4>
+          <div style="display: flex; justify-content: space-around">
+            <Card>
+              <template #default>
+                <p style="font-weight: bold">Июль</p>
+                <ul v-for="item in sevenMonth">
+                  <li>
+                    {{ item.name }}
+                    <DropDown
+                      @onClick="
+                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
+                      "
+                    />
+                  </li>
+                </ul>
+              </template>
+            </Card>
 
-      <div style="width: 50%">
-        <h4 style="text-align: center">Q3</h4>
-        <div style="display: flex; justify-content: space-around">
-          <div>
-            <p>Июль</p>
-            <ul v-for="item in sevenMonth">
-              <li>
-                {{ item.name }}
-                <button @click="deleteItemById(item.id)">DEL</button>
-              </li>
-            </ul>
-          </div>
+            <Card>
+              <template #default>
+                <p style="font-weight: bold">Август</p>
+                <ul v-for="item in ethMonth">
+                  <li>
+                    {{ item.name }}
+                    <DropDown
+                      @onClick="
+                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
+                      "
+                    />
+                  </li>
+                </ul>
+              </template>
+            </Card>
 
-          <div>
-            <p>Август</p>
-            <ul v-for="item in ethMonth">
-              <li>
-                {{ item.name }}
-                <button @click="deleteItemById(item.id)">DEL</button>
-              </li>
-            </ul>
+            <Card>
+              <template #default>
+                <p style="font-weight: bold">Сентябрь</p>
+                <ul v-for="item in nineMonth">
+                  <li>
+                    {{ item.name }}
+                    <DropDown
+                      @onClick="
+                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
+                      "
+                    />
+                  </li>
+                </ul>
+              </template>
+            </Card>
           </div>
+        </template>
+      </Card>
 
-          <div>
-            <p>Сентябрь</p>
-            <ul v-for="item in nineMonth">
-              <li>
-                {{ item.name }}
-                <button @click="deleteItemById(item.id)">DEL</button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <Card style="width: 50%; height: 300px">
+        <template #default>
+          <h4 style="text-align: center">Q4</h4>
+          <div style="display: flex; justify-content: space-around">
+            <Card>
+              <template #default>
+                <p style="font-weight: bold">Октябрь</p>
+                <ul v-for="item in tenMonth">
+                  <li>
+                    {{ item.name }}
+                    <DropDown
+                      @onClick="
+                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
+                      "
+                    />
+                  </li>
+                </ul>
+              </template>
+            </Card>
 
-      <div style="width: 50%">
-        <h4 style="text-align: center">Q4</h4>
-        <div style="display: flex; justify-content: space-around">
-          <div>
-            <p>Октябрь</p>
-            <ul v-for="item in tenMonth">
-              <li>
-                {{ item.name }}
-                <button @click="deleteItemById(item.id)">DEL</button>
-              </li>
-            </ul>
-          </div>
+            <Card>
+              <template #default>
+                <p style="font-weight: bold">Ноябрь</p>
+                <ul v-for="item in elevenMonth">
+                  <li>
+                    {{ item.name }}
+                    <DropDown
+                      @onClick="
+                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
+                      "
+                    />
+                  </li>
+                </ul>
+              </template>
+            </Card>
 
-          <div>
-            <p>Ноябрь</p>
-            <ul v-for="item in elevenMonth">
-              <li>
-                {{ item.name }}
-                <button @click="deleteItemById(item.id)">DEL</button>
-              </li>
-            </ul>
+            <Card>
+              <template #default>
+                <p style="font-weight: bold">Декабрь</p>
+                <ul v-for="item in fdaMonth">
+                  <li>
+                    {{ item.name }}
+                    <DropDown
+                      @onClick="
+                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
+                      "
+                    />
+                  </li>
+                </ul>
+              </template>
+            </Card>
           </div>
-
-          <div>
-            <p>Декабрь</p>
-            <ul v-for="item in fdaMonth">
-              <li>
-                {{ item.name }}
-                <button @click="deleteItemById(item.id)">DEL</button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+        </template>
+      </Card>
     </div>
   </div>
 </template>

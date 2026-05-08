@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onUpdated, ref } from "vue";
 import { serviceTodos } from "../../api/serviceTodos";
-import { LifeCyclePage, ErrorPage } from "../../components/pages";
+import { serviceProject } from "../../api";
+import { LifeCyclePage, ErrorPage, DefaultPage } from "../../components/pages";
 import { useStatusesLifeCycle } from "../../composables";
 
 import BasePage from "../../BasePage.vue";
@@ -45,8 +46,25 @@ const controllerTodoList = {
   createTodo,
 };
 
+const listProjects = ref([]);
+const getListProjects = async () => {
+  const { data } = await serviceProject.getList();
+  listProjects.value = data;
+  setStatusLifeCycle("isSuccess", true);
+};
+
+const nameProject = ref("");
+const createProject = async () => {
+  await serviceProject.createProject(nameProject.value);
+  await getListProjects();
+};
+
+const deleteByIdProject = async (id: number | string) => {
+  await serviceProject.deleteById(id);
+  await getListProjects();
+};
 onMounted(() => {
-  controllerTodoList.updateListTodos();
+  getListProjects();
 });
 </script>
 
@@ -61,9 +79,11 @@ onMounted(() => {
     </template>
 
     <template #success>
-      <router-link
-        :to="`/project/${item.id}/`"
-        v-for="item in listTodos"
+      <button @click="createProject">create project</button>
+      <input type="text" v-model="nameProject" />
+
+      <div
+        v-for="item in listProjects"
         :key="item.id"
         style="
           display: block;
@@ -72,17 +92,15 @@ onMounted(() => {
           margin-bottom: 20px;
         "
       >
-        <p>ID: {{ item.id }}</p>
-        <p>Name: {{ item.name }}</p>
-        <p>Description: {{ item.description }}</p>
-      </router-link>
+        <router-link :to="`/project/${item.id}/`">
+          <p>ID: {{ item.id }}</p>
+          <p>Name: {{ item.name }}</p>
+        </router-link>
 
-      <hr />
-      <br />
-      <br />
-      <BasePage />
+        <button @click="deleteByIdProject(item.id)">del</button>
+      </div>
     </template>
 
-    <template #else> ELSE PAGE</template>
+    <template #else> <DefaultPage /></template>
   </LifeCyclePage>
 </template>

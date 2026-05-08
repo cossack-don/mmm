@@ -17,7 +17,7 @@
 
     <BaseNavigation class="navigation" />
 
-    <main class="content" style="background-color: red">
+    <main class="content">
       <div class="content-wrapper">
         <BreadCrumbs class="breadcrumbs" />
         <div class="page-content">
@@ -66,9 +66,9 @@ import { BaseHeader, BaseNavigation, BaseFooter, BreadCrumbs } from "./ui";
 
 /* Внутренний контейнер для контента с отступами */
 .content-wrapper {
-  max-width: 1200px;
+  //max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  //padding: 20px;
   width: 100%;
   min-height: 100%;
   display: flex;
