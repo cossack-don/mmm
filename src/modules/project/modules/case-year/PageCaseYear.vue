@@ -4,48 +4,8 @@ import { Modal, Card, Button, DropDown } from "../../../../components/ui";
 import { serviceCaseYear } from "../../../../api";
 import { useRoute } from "vue-router";
 import { serviceCaseYearTargets } from "../../../../api/services";
-const list = ref([[], [], [], []]);
 
 const route = useRoute();
-
-const controllerCaseYearTask = {
-  getList: async () => {
-    list.value = [[], [], [], []];
-
-    const { data } = await serviceCaseYear.getList(route.params.idProject);
-
-    data.forEach((item) => {
-      if (item.keyQ === "Q1") {
-        list.value[0].push(item);
-      } else if (item.keyQ === "Q2") {
-        list.value[1].push(item);
-      } else if (item.keyQ === "Q3") {
-        list.value[2].push(item);
-      } else if (item.keyQ === "Q4") {
-        list.value[3].push(item);
-      }
-    });
-  },
-  deleteItemById: async (id: any) => {
-    await serviceCaseYear.deleteById(route.params.idProject, id);
-    await controllerCaseYearTask.getList();
-  },
-  putById: async (idTask) => {
-    await serviceCaseYear.putById(
-      route.params.idProject as string,
-      idTask,
-      stateModalName.value,
-    );
-
-    idEditElement.value = null;
-    stateModalName.value = "";
-  },
-};
-
-onMounted(() => {
-  controllerCaseYearTask.getList();
-  controllerCaseYearTargets.getList(route.params.idProject);
-});
 
 //Q1
 const firstMonth = computed(() => {
@@ -156,77 +116,40 @@ const Q = [
     name: "Q4",
   },
 ];
-const isModalOpen = ref(false);
-const isModalOpenTwo = ref(false);
 
-const stateModalName = ref("");
-const optionsQ = ref<any>(Q);
-const pickedQ = ref(Q[0].id);
-const optionsMonth = ref<any>(listMonths);
-const pickedMonth = ref(listMonths[0].id);
+const list = ref([[], [], [], []]);
+const controllerCaseYearTask = {
+  getList: async () => {
+    list.value = [[], [], [], []];
 
-const openModal = () => {
-  isModalOpen.value = true;
-};
+    const { data } = await serviceCaseYear.getList(route.params.idProject);
 
-const idEditElement = ref(null);
-const openModalTwo = (id, nameTask) => {
-  isModalOpenTwo.value = true;
-  idEditElement.value = id;
-  stateModalName.value = nameTask;
-};
+    data.forEach((item) => {
+      if (item.keyQ === "Q1") {
+        list.value[0].push(item);
+      } else if (item.keyQ === "Q2") {
+        list.value[1].push(item);
+      } else if (item.keyQ === "Q3") {
+        list.value[2].push(item);
+      } else if (item.keyQ === "Q4") {
+        list.value[3].push(item);
+      }
+    });
+  },
+  deleteItemById: async (id: any) => {
+    await serviceCaseYear.deleteById(route.params.idProject, id);
+    await controllerCaseYearTask.getList();
+  },
+  putById: async (idTask) => {
+    await serviceCaseYear.putById(
+      route.params.idProject as string,
+      idTask,
+      stateModalName.value,
+    );
 
-const formDataCreateTask = ref({
-  month: null,
-  name: "",
-  keyQ: null,
-});
-
-const handleConfirm = async () => {
-  await serviceCaseYear.createTaskQ(
-    route.params.idProject as string,
-    stateModalName.value,
-    `Q${pickedQ.value}`,
-    pickedMonth.value,
-  );
-
-  await controllerCaseYearTask.getList();
-};
-
-const handleConfirmTwo = async () => {
-  await controllerCaseYearTask.putById(idEditElement.value);
-  await controllerCaseYearTask.getList();
-};
-
-const currentListMonths = computed(() => {
-  if (pickedQ.value === 1) {
-    const res = optionsMonth.value.filter((item) => item.keyQ === "Q1");
-    return res;
-  } else if (pickedQ.value === 2) {
-    const res = optionsMonth.value.filter((item) => item.keyQ === "Q2");
-
-    return res;
-  } else if (pickedQ.value === 3) {
-    const res = optionsMonth.value.filter((item) => item.keyQ === "Q3");
-
-    return res;
-  } else if (pickedQ.value === 4) {
-    const res = optionsMonth.value.filter((item) => item.keyQ === "Q4");
-    return res;
-  }
-});
-
-const isModalOpenThree = ref(false);
-const openModalThree = () => {
-  isModalOpenThree.value = true;
-};
-
-const handleConfirmThree = async () => {
-  await controllerCaseYearTargets.createTarget(
-    route.params.idProject,
-    stateModalName.value,
-  );
-  await controllerCaseYearTargets.getList(route.params.idProject);
+    idEditElement.value = null;
+    stateModalName.value = "";
+  },
 };
 
 const listYearTargets = ref([]);
@@ -240,21 +163,126 @@ const controllerCaseYearTargets = {
     await serviceCaseYearTargets.deleteById(idProject, idTarget);
     await controllerCaseYearTargets.getList(idProject);
   },
-  putById: async (idProject: any, idTarget: any, name: any) => {
-    await serviceCaseYearTargets.putById(idProject, idTarget, name);
+  putById: async (idTarget: any) => {
+    // await serviceCaseYearTargets.putById(idProject, idTarget, name);
+
+    await serviceCaseYearTargets.putById(
+      route.params.idProject as string,
+      idTarget,
+      stateModalName.value,
+    );
+
+    idEditElement.value = null;
+    stateModalName.value = "";
   },
 
   createTarget: async (idProject: any, name: any) => {
     await serviceCaseYearTargets.createTarget(idProject, name);
   },
 };
-const onPickedOptionsTargets = async (id, idTarget) => {
+
+const idEditElement = ref(null);
+const isModalOpen = ref(false);
+const openModal = () => (isModalOpen.value = true);
+
+const isModalOpenTwo = ref(false);
+const openModalTwo = (id, nameTask) => {
+  isModalOpenTwo.value = true;
+  idEditElement.value = id;
+  stateModalName.value = nameTask;
+};
+const handleConfirmTwo = async () => {
+  await controllerCaseYearTask.putById(idEditElement.value);
+  await controllerCaseYearTask.getList();
+};
+
+const isModalOpenThree = ref(false);
+const openModalThree = () => (isModalOpenThree.value = true);
+const handleConfirmThree = async () => {
+  await controllerCaseYearTargets.createTarget(
+    route.params.idProject,
+    stateModalName.value,
+  );
+  await controllerCaseYearTargets.getList(route.params.idProject);
+};
+
+const isModalOpenFour = ref(false);
+const openModalFour = (id, nameTarget) => {
+  isModalOpenFour.value = true;
+  idEditElement.value = id;
+  stateModalName.value = nameTarget;
+};
+// const handleConfirmTwo = async () => {
+//   await controllerCaseYearTask.putById(idEditElement.value);
+//   await controllerCaseYearTask.getList();
+// };
+const handleConfirmFour = async (idProject, idTarget, nameTarget) => {
+  console.log("dada");
+  // isModalOpenFour.value = true;
+  // idEditElement.value = idTarget;
+  // stateModalName.value = nameTarget;
+
+  // await controllerCaseYearTask.putById(idEditElement.value);
+  // await controllerCaseYearTask.getList();
+  await controllerCaseYearTargets.putById(idEditElement.value);
+  await controllerCaseYearTargets.getList(route.params.idProject);
+  // await controllerCaseYearTask.putById(idTarget);
+  // await controllerCaseYearTask.getList();
+};
+
+const stateModalName = ref("");
+
+const optionsQ = ref<any>(Q);
+const pickedQ = ref(Q[0].id);
+
+const optionsMonth = ref<any>(listMonths);
+const pickedMonth = ref(listMonths[0].id);
+
+const handleConfirm = async () => {
+  await serviceCaseYear.createTaskQ(
+    route.params.idProject as string,
+    stateModalName.value,
+    `Q${pickedQ.value}`,
+    pickedMonth.value,
+  );
+
+  stateModalName.value = "";
+
+  await controllerCaseYearTask.getList();
+};
+
+const currentListMonths = computed(() => {
+  if (pickedQ.value === 1) {
+    const res = optionsMonth.value.filter((item) => item.keyQ === "Q1");
+    console.log(res, 33);
+    pickedMonth.value = res[0].id;
+    return res;
+  } else if (pickedQ.value === 2) {
+    const res = optionsMonth.value.filter((item) => item.keyQ === "Q2");
+    pickedMonth.value = res[0].id;
+    return res;
+  } else if (pickedQ.value === 3) {
+    const res = optionsMonth.value.filter((item) => item.keyQ === "Q3");
+    pickedMonth.value = res[0].id;
+    return res;
+  } else if (pickedQ.value === 4) {
+    const res = optionsMonth.value.filter((item) => item.keyQ === "Q4");
+    pickedMonth.value = res[0].id;
+    return res;
+  }
+});
+
+const onPickedOptionsTargets = async (id, idTarget, name) => {
   if (id === 1) {
     await controllerCaseYearTargets.deleteById(
       route.params.idProject,
       idTarget,
     );
   } else if (id === 2) {
+    openModalFour(idTarget, name);
+    console.log(1);
+    // await controllerCaseYearTargets.putById(route.params.idProject, idTarget);
+    // await handleConfirmFour(route.params.idProject, idTarget, name);
     //не доделал
     // await controllerCaseYearTargets.putById(
     //   route.params.idProject,
@@ -264,73 +292,87 @@ const onPickedOptionsTargets = async (id, idTarget) => {
   }
 };
 
-// <button @click="openModalTwo(item.id, item.name)">
-//   EDIT
-//   </button>
 const onPickedOptionsTask = async (id, idTask, name) => {
   if (id === 1) {
     await controllerCaseYearTask.deleteById(route.params.idProject, idTask);
   } else if (id === 2) {
     openModalTwo(idTask, name);
-    //не доделал
-    // await controllerCaseYearTask.putById(
-    //   route.params.idProject,
-    //   idTask,
-    //   null,
-    // );
   }
 };
+
+const changePickMonth = (event) => {
+  console.log(event);
+};
+
+onMounted(() => {
+  controllerCaseYearTask.getList();
+  controllerCaseYearTargets.getList(route.params.idProject);
+});
 </script>
 
 <template>
   <div>
     <Modal
       v-model="isModalOpen"
-      title="Простое модальное окно"
+      title="Создание задачи"
       @confirm="handleConfirm"
     >
-      <p>Это содержимое модального окна</p>
-      <input v-model="stateModalName" placeholder="Название задачи" />
+      <div style="display: flex">
+        <p style="margin-right: 10px">Название задачи</p>
+        <input v-model="stateModalName" placeholder="Название задачи" />
+      </div>
 
-      <div>
+      <div style="display: flex">
+        <p style="margin-right: 10px">Выбор квартала</p>
         <select v-model="pickedQ">
-          <option v-for="option in optionsQ" :value="option.id">
+          <option
+            v-for="option in optionsQ"
+            :value="option.id"
+            :key="option.id"
+          >
             {{ option.name }}
           </option>
         </select>
       </div>
-      {{ pickedMonth }}
-      <select v-model="pickedMonth">
-        <option
-          v-for="item in currentListMonths"
-          :value="item.id"
-          :key="item.id"
-        >
-          {{ item.name }}
-        </option>
-      </select>
 
-      <div>
-        res -
-        <pre> {{ formDataCreateTask }}</pre>
+      <div style="display: flex">
+        <p style="margin-right: 10px">Выбор месяца</p>
+        <select @change="changePickMonth" :value="pickedMonth">
+          <option
+            v-for="option in currentListMonths"
+            :value="option.id"
+            :key="option.id"
+          >
+            {{ option.name }}
+          </option>
+        </select>
       </div>
     </Modal>
 
     <Modal
       v-model="isModalOpenTwo"
-      title="Простое модальное окно"
+      title="Редактирование задачи"
       @confirm="handleConfirmTwo"
     >
-      <p>Это содержимое модального окна</p>
+      <p>Название задачи</p>
       <input v-model="stateModalName" placeholder="Название задачи" />
     </Modal>
 
     <Modal
       v-model="isModalOpenThree"
-      title="Простое модальное окно"
+      title="Создание цели на год"
       @confirm="handleConfirmThree"
     >
-      <p>Создать цель на год</p>
+      <p>Название цели</p>
+      <input v-model="stateModalName" placeholder="Название цели" />
+    </Modal>
+
+    <Modal
+      v-model="isModalOpenFour"
+      title="Редактирование цели на год"
+      @confirm="handleConfirmFour"
+    >
+      <p>Название цели</p>
       <input v-model="stateModalName" placeholder="Название цели" />
     </Modal>
 
@@ -349,7 +391,9 @@ const onPickedOptionsTask = async (id, idTask, name) => {
             <template #default>
               <p>{{ item.name }}</p>
               <DropDown
-                @onClick="({ id }) => onPickedOptionsTargets(id, item.id)"
+                @onClick="
+                  ({ id }) => onPickedOptionsTargets(id, item.id, item.name)
+                "
               />
             </template>
           </Card>
@@ -375,7 +419,7 @@ const onPickedOptionsTask = async (id, idTask, name) => {
               margin-bottom: 100px;
             "
           >
-            <Card>
+            <Card style="width: 100%">
               <template #default>
                 <p style="font-weight: bold">Январь</p>
                 <ul v-for="item in firstMonth">
@@ -391,7 +435,7 @@ const onPickedOptionsTask = async (id, idTask, name) => {
               </template>
             </Card>
 
-            <Card>
+            <Card style="width: 100%">
               <template #default>
                 <p style="font-weight: bold">Февраль</p>
                 <ul v-for="item in secondMonth">
@@ -406,7 +450,7 @@ const onPickedOptionsTask = async (id, idTask, name) => {
               ></template>
             </Card>
 
-            <Card>
+            <Card style="width: 100%">
               <template #default>
                 <p style="font-weight: bold">Март</p>
                 <ul v-for="item in thorMonth">
@@ -489,7 +533,7 @@ const onPickedOptionsTask = async (id, idTask, name) => {
         <template #default>
           <h4 style="text-align: center">Q3</h4>
           <div style="display: flex; justify-content: space-around">
-            <Card>
+            <Card style="width: 100%">
               <template #default>
                 <p style="font-weight: bold">Июль</p>
                 <ul v-for="item in sevenMonth">
@@ -505,7 +549,7 @@ const onPickedOptionsTask = async (id, idTask, name) => {
               </template>
             </Card>
 
-            <Card>
+            <Card style="width: 100%">
               <template #default>
                 <p style="font-weight: bold">Август</p>
                 <ul v-for="item in ethMonth">
@@ -521,7 +565,7 @@ const onPickedOptionsTask = async (id, idTask, name) => {
               </template>
             </Card>
 
-            <Card>
+            <Card style="width: 100%">
               <template #default>
                 <p style="font-weight: bold">Сентябрь</p>
                 <ul v-for="item in nineMonth">
@@ -544,7 +588,7 @@ const onPickedOptionsTask = async (id, idTask, name) => {
         <template #default>
           <h4 style="text-align: center">Q4</h4>
           <div style="display: flex; justify-content: space-around">
-            <Card>
+            <Card style="width: 100%">
               <template #default>
                 <p style="font-weight: bold">Октябрь</p>
                 <ul v-for="item in tenMonth">
@@ -560,7 +604,7 @@ const onPickedOptionsTask = async (id, idTask, name) => {
               </template>
             </Card>
 
-            <Card>
+            <Card style="width: 100%">
               <template #default>
                 <p style="font-weight: bold">Ноябрь</p>
                 <ul v-for="item in elevenMonth">
@@ -576,7 +620,7 @@ const onPickedOptionsTask = async (id, idTask, name) => {
               </template>
             </Card>
 
-            <Card>
+            <Card style="width: 100%">
               <template #default>
                 <p style="font-weight: bold">Декабрь</p>
                 <ul v-for="item in fdaMonth">

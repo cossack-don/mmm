@@ -13,7 +13,7 @@
 
         <div class="modal-footer">
           <button class="btn-cancel" @click="closeModal">Отмена</button>
-          <button class="btn-confirm" @click="confirmModal">Подтвердить</button>
+          <button class="btn-confirm" @click="confirmModal">Создать</button>
         </div>
       </div>
     </div>
