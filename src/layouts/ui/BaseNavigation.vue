@@ -5,12 +5,11 @@ import { computed } from "vue";
 const listNavigation = computed(() => {
   const res = routes.find((item) => {
     if (item.name === "project") {
-      console.log(item, 333);
       return item.children?.map((child) => child?.meta?.nameRu !== null);
     }
     // item[1]
   });
-  console.log(res, 123);
+
   return res.children;
 });
 </script>

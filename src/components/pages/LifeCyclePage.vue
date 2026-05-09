@@ -2,9 +2,9 @@
 import Spinner from "../ui/Spinner.vue";
 
 interface IProps {
-  isLoading: boolean;
-  isError: boolean;
-  isSuccess: boolean;
+  isLoading?: boolean;
+  isError?: boolean;
+  isSuccess?: boolean;
 }
 
 const props = withDefaults(defineProps<IProps>(), {

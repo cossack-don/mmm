@@ -1,209 +1,104 @@
 <script setup lang="ts">
-import { computed, watch, onMounted, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { Modal, Card, Button, DropDown } from "../../../../components/ui";
-import { serviceCaseYear } from "../../../../api";
+import { LifeCyclePage } from "../../../../components/pages";
 import { useRoute } from "vue-router";
-import { serviceCaseYearTargets } from "../../../../api/services";
+import {
+  useQueryClient,
+  useQuery,
+  useMutation,
+  useQueries,
+} from "@tanstack/vue-query";
+import { caseYearTargetsQuery } from "./query/case-year-targets.query.ts";
+import { caseYearQuery } from "./query/case-year.query.ts";
+import { listMonths, Q } from "./static.ts";
 
 const route = useRoute();
+const queryClient = useQueryClient();
 
-//Q1
-const firstMonth = computed(() => {
-  return list.value[0].filter((item) => {
-    if (item.month === 1) return item;
-  });
-});
+// TODO CRUD list case year
+const { data: listCaseYear, isPending: isLoadingCaseYear } = useQuery(
+  caseYearQuery.GET_LIST(route),
+);
+const { mutate: deleteByIdCaseYearTask } = useMutation(
+  caseYearQuery.DELETE(queryClient),
+);
 
-const secondMonth = computed(() => {
-  return list.value[0].filter((item) => {
-    if (item.month === 2) return item;
-  });
-});
+const { mutate: putByIdCaseYearTask } = useMutation(
+  caseYearQuery.PUT(queryClient),
+);
 
-const thorMonth = computed(() => {
-  return list.value[0].filter((item) => {
-    if (item.month === 3) return item;
-  });
-});
+const { mutate: createCaseYearTask } = useMutation(
+  caseYearQuery.POST(queryClient),
+);
 
-//Q2
-const forMonth = computed(() => {
-  return list.value[1].filter((item) => {
-    if (item.month === 4) return item;
-  });
-});
+// TODO а тут есть ли обработка ошибки??? в useQuery или они только в useMutation ???
+// TODO CRUD list case year targets
+const { data: listCaseYearTargets, isPending: isLoadingCaseYearTargets } =
+  useQuery(caseYearTargetsQuery.GET_LIST(route));
 
-const fiveMonth = computed(() => {
-  return list.value[1].filter((item) => {
-    if (item.month === 5) return item;
-  });
-});
+const { mutate: deleteByIdCaseYearTarget } = useMutation(
+  caseYearTargetsQuery.DELETE(queryClient),
+);
 
-const sixMonth = computed(() => {
-  return list.value[1].filter((item) => {
-    if (item.month === 6) return item;
-  });
-});
+const { mutate: putByIdCaseYearTarget } = useMutation(
+  caseYearTargetsQuery.PUT(queryClient),
+);
 
-//Q3
-const sevenMonth = computed(() => {
-  return list.value[2].filter((item) => {
-    if (item.month === 7) return item;
-  });
-});
+const { mutate: createCaseYearTarget } = useMutation(
+  caseYearTargetsQuery.POST(queryClient),
+);
 
-const ethMonth = computed(() => {
-  return list.value[2].filter((item) => {
-    if (item.month === 8) return item;
-  });
-});
-
-const nineMonth = computed(() => {
-  return list.value[2].filter((item) => {
-    if (item.month === 9) return item;
-  });
-});
-
-//Q4
-const tenMonth = computed(() => {
-  return list.value[3].filter((item) => {
-    if (item.month === 10) return item;
-  });
-});
-
-const elevenMonth = computed(() => {
-  return list.value[3].filter((item) => {
-    if (item.month === 11) return item;
-  });
-});
-
-const fdaMonth = computed(() => {
-  return list.value[3].filter((item) => {
-    if (item.month === 12) return item;
-  });
-});
-
-const listMonths = [
-  { id: 1, name: "Январь", keyQ: "Q1" },
-  { id: 2, name: "Февраль", keyQ: "Q1" },
-  { id: 3, name: "Март", keyQ: "Q1" },
-  { id: 4, name: "Апрель", keyQ: "Q2" },
-  { id: 5, name: "Май", keyQ: "Q2" },
-  { id: 6, name: "Июнь", keyQ: "Q2" },
-  { id: 7, name: "Июль", keyQ: "Q3" },
-  { id: 8, name: "Август", keyQ: "Q3" },
-  { id: 9, name: "Сентябрь", keyQ: "Q3" },
-  { id: 10, name: "Октябрь", keyQ: "Q4" },
-  { id: 11, name: "Ноябрь", keyQ: "Q4" },
-  { id: 12, name: "Декабрь", keyQ: "Q4" },
-];
-
-const Q = [
-  {
-    id: 1,
-    name: "Q1",
-  },
-  {
-    id: 2,
-    name: "Q2",
-  },
-  {
-    id: 3,
-    name: "Q3",
-  },
-  {
-    id: 4,
-    name: "Q4",
-  },
-];
-
-const list = ref([[], [], [], []]);
-const controllerCaseYearTask = {
-  getList: async () => {
-    list.value = [[], [], [], []];
-
-    const { data } = await serviceCaseYear.getList(route.params.idProject);
-
-    data.forEach((item) => {
-      if (item.keyQ === "Q1") {
-        list.value[0].push(item);
-      } else if (item.keyQ === "Q2") {
-        list.value[1].push(item);
-      } else if (item.keyQ === "Q3") {
-        list.value[2].push(item);
-      } else if (item.keyQ === "Q4") {
-        list.value[3].push(item);
-      }
-    });
-  },
-  deleteItemById: async (id: any) => {
-    await serviceCaseYear.deleteById(route.params.idProject, id);
-    await controllerCaseYearTask.getList();
-  },
-  putById: async (idTask) => {
-    await serviceCaseYear.putById(
-      route.params.idProject as string,
-      idTask,
-      stateModalName.value,
+const getMonthData = (quarterIndex: number, month: number) => {
+  return computed(() => {
+    return (
+      listCaseYear.value?.[quarterIndex]?.filter(
+        (item: any) => item.month === month,
+      ) || []
     );
-
-    idEditElement.value = null;
-    stateModalName.value = "";
-  },
+  });
 };
+const firstMonth = getMonthData(0, 1);
+const secondMonth = getMonthData(0, 2);
+const thorMonth = getMonthData(0, 3);
 
-const listYearTargets = ref([]);
+const forMonth = getMonthData(1, 4);
+const fiveMonth = getMonthData(1, 5);
+const sixMonth = getMonthData(1, 6);
 
-const controllerCaseYearTargets = {
-  getList: async (idProject: any) => {
-    const { data } = await serviceCaseYearTargets.getList(idProject);
-    listYearTargets.value = data;
-  },
-  deleteById: async (idProject: any, idTarget: any) => {
-    await serviceCaseYearTargets.deleteById(idProject, idTarget);
-    await controllerCaseYearTargets.getList(idProject);
-  },
-  putById: async (idTarget: any) => {
-    // await serviceCaseYearTargets.putById(idProject, idTarget, name);
+const sevenMonth = getMonthData(2, 7);
+const ethMonth = getMonthData(2, 8);
+const nineMonth = getMonthData(2, 9);
 
-    await serviceCaseYearTargets.putById(
-      route.params.idProject as string,
-      idTarget,
-      stateModalName.value,
-    );
-
-    idEditElement.value = null;
-    stateModalName.value = "";
-  },
-
-  createTarget: async (idProject: any, name: any) => {
-    await serviceCaseYearTargets.createTarget(idProject, name);
-  },
-};
+const tenMonth = getMonthData(3, 10);
+const elevenMonth = getMonthData(3, 11);
+const fdaMonth = getMonthData(3, 12);
 
 const idEditElement = ref(null);
 const isModalOpen = ref(false);
 const openModal = () => (isModalOpen.value = true);
 
 const isModalOpenTwo = ref(false);
-const openModalTwo = (id, nameTask) => {
+const openModalTwo = (id: any, nameTask: any) => {
   isModalOpenTwo.value = true;
   idEditElement.value = id;
   stateModalName.value = nameTask;
 };
 const handleConfirmTwo = async () => {
-  await controllerCaseYearTask.putById(idEditElement.value);
-  await controllerCaseYearTask.getList();
+  putByIdCaseYearTask({
+    idProject: route.params.idProject,
+    idTask: idEditElement.value,
+    name: stateModalName.value,
+  });
 };
 
 const isModalOpenThree = ref(false);
 const openModalThree = () => (isModalOpenThree.value = true);
 const handleConfirmThree = async () => {
-  await controllerCaseYearTargets.createTarget(
-    route.params.idProject,
-    stateModalName.value,
-  );
-  await controllerCaseYearTargets.getList(route.params.idProject);
+  createCaseYearTarget({
+    idProject: route.params.idProject,
+    name: stateModalName.value,
+  });
 };
 
 const isModalOpenFour = ref(false);
@@ -212,22 +107,13 @@ const openModalFour = (id, nameTarget) => {
   idEditElement.value = id;
   stateModalName.value = nameTarget;
 };
-// const handleConfirmTwo = async () => {
-//   await controllerCaseYearTask.putById(idEditElement.value);
-//   await controllerCaseYearTask.getList();
-// };
-const handleConfirmFour = async (idProject, idTarget, nameTarget) => {
-  console.log("dada");
-  // isModalOpenFour.value = true;
-  // idEditElement.value = idTarget;
-  // stateModalName.value = nameTarget;
 
-  // await controllerCaseYearTask.putById(idEditElement.value);
-  // await controllerCaseYearTask.getList();
-  await controllerCaseYearTargets.putById(idEditElement.value);
-  await controllerCaseYearTargets.getList(route.params.idProject);
-  // await controllerCaseYearTask.putById(idTarget);
-  // await controllerCaseYearTask.getList();
+const handleConfirmFour = () => {
+  putByIdCaseYearTarget({
+    idProject: route.params.idProject,
+    idTarget: idEditElement.value,
+    name: stateModalName.value,
+  } as any);
 };
 
 const stateModalName = ref("");
@@ -239,406 +125,419 @@ const optionsMonth = ref<any>(listMonths);
 const pickedMonth = ref(listMonths[0].id);
 
 const handleConfirm = async () => {
-  await serviceCaseYear.createTaskQ(
-    route.params.idProject as string,
-    stateModalName.value,
-    `Q${pickedQ.value}`,
-    pickedMonth.value,
-  );
+  createCaseYearTask({
+    idProject: route.params.idProject,
+    name: stateModalName.value,
+    pickedQ: pickedQ.value,
+    month: pickedMonth.value,
+  });
 
   stateModalName.value = "";
-
-  await controllerCaseYearTask.getList();
 };
 
 const currentListMonths = computed(() => {
   if (pickedQ.value === 1) {
-    const res = optionsMonth.value.filter((item) => item.keyQ === "Q1");
-    console.log(res, 33);
+    const res = optionsMonth.value.filter((item: any) => item.keyQ === "Q1");
     pickedMonth.value = res[0].id;
     return res;
   } else if (pickedQ.value === 2) {
-    const res = optionsMonth.value.filter((item) => item.keyQ === "Q2");
+    const res = optionsMonth.value.filter((item: any) => item.keyQ === "Q2");
     pickedMonth.value = res[0].id;
     return res;
   } else if (pickedQ.value === 3) {
-    const res = optionsMonth.value.filter((item) => item.keyQ === "Q3");
+    const res = optionsMonth.value.filter((item: any) => item.keyQ === "Q3");
     pickedMonth.value = res[0].id;
     return res;
   } else if (pickedQ.value === 4) {
-    const res = optionsMonth.value.filter((item) => item.keyQ === "Q4");
+    const res = optionsMonth.value.filter((item: any) => item.keyQ === "Q4");
     pickedMonth.value = res[0].id;
     return res;
   }
 });
 
-const onPickedOptionsTargets = async (id, idTarget, name) => {
+const onPickedOptionsTargets = (id: any, idTarget: any, name: any) => {
   if (id === 1) {
-    await controllerCaseYearTargets.deleteById(
-      route.params.idProject,
-      idTarget,
-    );
+    deleteByIdCaseYearTarget({
+      idProject: route.params.idProject,
+      idTarget: idTarget,
+    });
   } else if (id === 2) {
     openModalFour(idTarget, name);
-    console.log(1);
-    // await controllerCaseYearTargets.putById(route.params.idProject, idTarget);
-    // await handleConfirmFour(route.params.idProject, idTarget, name);
-    //не доделал
-    // await controllerCaseYearTargets.putById(
-    //   route.params.idProject,
-    //   idTarget,
-    //   null,
-    // );
   }
 };
 
-const onPickedOptionsTask = async (id, idTask, name) => {
+const onPickedOptionsTask = async (id: any, idTask: any, name: any) => {
   if (id === 1) {
-    await controllerCaseYearTask.deleteItemById(idTask);
+    deleteByIdCaseYearTask({
+      idProject: route.params.idProject,
+      idTask: idTask,
+    });
   } else if (id === 2) {
     openModalTwo(idTask, name);
   }
 };
 
-const changePickMonth = (event) => {
-  console.log(event.target.value);
+const changePickMonth = (event: any) => {
   pickedMonth.value = event.target.value;
 };
-
-onMounted(() => {
-  controllerCaseYearTask.getList();
-  controllerCaseYearTargets.getList(route.params.idProject);
-});
 </script>
 
 <template>
-  <div>
-    <Modal
-      v-model="isModalOpen"
-      title="Создание задачи"
-      @confirm="handleConfirm"
-    >
-      <div style="display: flex">
-        <p style="margin-right: 10px">Название задачи</p>
-        <input v-model="stateModalName" placeholder="Название задачи" />
-      </div>
+  <LifeCyclePage
+    :isLoading="isLoadingCaseYearTargets || isLoadingCaseYear"
+    :isError="false"
+    :isSuccess="true"
+  >
+    <template #error>
+      <div>error</div>
+    </template>
+    <template #success>
+      <div>
+        <Modal
+          v-model="isModalOpen"
+          title="Создание задачи"
+          @confirm="handleConfirm"
+        >
+          <div style="display: flex">
+            <p style="margin-right: 10px">Название задачи</p>
+            <input v-model="stateModalName" placeholder="Название задачи" />
+          </div>
 
-      <div style="display: flex">
-        <p style="margin-right: 10px">Выбор квартала</p>
-        <select v-model="pickedQ">
-          <option
-            v-for="option in optionsQ"
-            :value="option.id"
-            :key="option.id"
-          >
-            {{ option.name }}
-          </option>
-        </select>
-      </div>
+          <div style="display: flex">
+            <p style="margin-right: 10px">Выбор квартала</p>
+            <select v-model="pickedQ">
+              <option
+                v-for="option in optionsQ"
+                :value="option.id"
+                :key="option.id"
+              >
+                {{ option.name }}
+              </option>
+            </select>
+          </div>
 
-      <div style="display: flex">
-        <p style="margin-right: 10px">Выбор месяца</p>
-        <select @change="changePickMonth" :value="pickedMonth">
-          <option
-            v-for="option in currentListMonths"
-            :value="option.id"
-            :key="option.id"
-          >
-            {{ option.name }}
-          </option>
-        </select>
-      </div>
-    </Modal>
+          <div style="display: flex">
+            <p style="margin-right: 10px">Выбор месяца</p>
+            <select @change="changePickMonth" :value="pickedMonth">
+              <option
+                v-for="option in currentListMonths"
+                :value="option.id"
+                :key="option.id"
+              >
+                {{ option.name }}
+              </option>
+            </select>
+          </div>
+        </Modal>
 
-    <Modal
-      v-model="isModalOpenTwo"
-      title="Редактирование задачи"
-      @confirm="handleConfirmTwo"
-    >
-      <p>Название задачи</p>
-      <input v-model="stateModalName" placeholder="Название задачи" />
-    </Modal>
+        <Modal
+          v-model="isModalOpenTwo"
+          title="Редактирование задачи"
+          @confirm="handleConfirmTwo"
+        >
+          <p>Название задачи</p>
+          <input v-model="stateModalName" placeholder="Название задачи" />
+        </Modal>
 
-    <Modal
-      v-model="isModalOpenThree"
-      title="Создание цели на год"
-      @confirm="handleConfirmThree"
-    >
-      <p>Название цели</p>
-      <input v-model="stateModalName" placeholder="Название цели" />
-    </Modal>
+        <Modal
+          v-model="isModalOpenThree"
+          title="Создание цели на год"
+          @confirm="handleConfirmThree"
+        >
+          <p>Название цели</p>
+          <input v-model="stateModalName" placeholder="Название цели" />
+        </Modal>
 
-    <Modal
-      v-model="isModalOpenFour"
-      title="Редактирование цели на год"
-      @confirm="handleConfirmFour"
-    >
-      <p>Название цели</p>
-      <input v-model="stateModalName" placeholder="Название цели" />
-    </Modal>
+        <Modal
+          v-model="isModalOpenFour"
+          title="Редактирование цели на год"
+          @confirm="handleConfirmFour"
+        >
+          <p>Название цели</p>
+          <input v-model="stateModalName" placeholder="Название цели" />
+        </Modal>
 
-    <Card style="margin-bottom: 40px" :styles="{ width: '100%' }">
-      <template #default>
-        <h4>Дела на год 2026</h4>
+        <Card style="margin-bottom: 40px" :styles="{ width: '100%' }">
+          <template #default>
+            <h4>Дела на год 2026</h4>
 
-        <Button @click="openModalThree">Создание цели</Button>
+            <Button @click="openModalThree">Создание цели</Button>
+
+            <div style="display: flex; flex-wrap: wrap">
+              <Card
+                style="margin: 10px; display: flex; align-items: center"
+                v-for="item in listCaseYearTargets"
+                :key="item.id"
+              >
+                <template #default>
+                  <p>{{ item.name }}</p>
+                  <DropDown
+                    @onClick="
+                      ({ id }) => onPickedOptionsTargets(id, item.id, item.name)
+                    "
+                  />
+                </template>
+              </Card>
+            </div>
+          </template>
+        </Card>
+
+        <h4>Планы на 4-е квартала</h4>
+
+        <Button @click="openModal">Создание задачи</Button>
+        <br />
 
         <div style="display: flex; flex-wrap: wrap">
           <Card
-            style="margin: 10px; display: flex; align-items: center"
-            v-for="item in listYearTargets"
-            :key="item.id"
+            style="
+              width: 48%;
+              height: 300px;
+              margin-right: 5px;
+              margin-bottom: 5px;
+            "
           >
             <template #default>
-              <p>{{ item.name }}</p>
-              <DropDown
-                @onClick="
-                  ({ id }) => onPickedOptionsTargets(id, item.id, item.name)
+              <h4 style="text-align: center">Q1</h4>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-around;
+                  margin-bottom: 100px;
                 "
-              />
+              >
+                <Card style="width: 100%">
+                  <template #default>
+                    <p style="font-weight: bold">Январь</p>
+                    <ul v-for="item in firstMonth">
+                      <li>
+                        {{ item.name }}
+                        <DropDown
+                          @onClick="
+                            ({ id }) =>
+                              onPickedOptionsTask(id, item.id, item.name)
+                          "
+                        />
+                      </li>
+                    </ul>
+                  </template>
+                </Card>
+
+                <Card style="width: 100%">
+                  <template #default>
+                    <p style="font-weight: bold">Февраль</p>
+                    <ul v-for="item in secondMonth">
+                      <li>
+                        {{ item.name }}
+                        <DropDown
+                          @onClick="
+                            ({ id }) =>
+                              onPickedOptionsTask(id, item.id, item.name)
+                          "
+                        />
+                      </li></ul
+                  ></template>
+                </Card>
+
+                <Card style="width: 100%">
+                  <template #default>
+                    <p style="font-weight: bold">Март</p>
+                    <ul v-for="item in thorMonth">
+                      <li>
+                        {{ item.name }}
+                        <DropDown
+                          @onClick="
+                            ({ id }) =>
+                              onPickedOptionsTask(id, item.id, item.name)
+                          "
+                        />
+                      </li>
+                    </ul>
+                  </template>
+                </Card>
+              </div>
+            </template>
+          </Card>
+
+          <Card style="width: 50%; height: 300px; margin-bottom: 5px">
+            <template #default>
+              <h4 style="text-align: center">Q2</h4>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-around;
+                  margin-bottom: 100px;
+                "
+              >
+                <Card style="width: 100%">
+                  <template #default>
+                    <p style="font-weight: bold">Апрель</p>
+                    <ul v-for="item in forMonth">
+                      <li style="font-size: 12px">
+                        {{ item.name }}
+                        <DropDown
+                          @onClick="
+                            ({ id }) =>
+                              onPickedOptionsTask(id, item.id, item.name)
+                          "
+                        />
+                      </li>
+                    </ul>
+                  </template>
+                </Card>
+
+                <Card style="width: 100%">
+                  <template #default>
+                    <p style="font-weight: bold">Май</p>
+                    <ul v-for="(item, index) in fiveMonth">
+                      <li style="font-size: 12px">
+                        {{ index + 1 }} - {{ item.name }}
+                        <DropDown
+                          @onClick="
+                            ({ id }) =>
+                              onPickedOptionsTask(id, item.id, item.name)
+                          "
+                        />
+                      </li>
+                    </ul>
+                  </template>
+                </Card>
+                <Card style="width: 100%">
+                  <template #default>
+                    <p style="font-weight: bold">Июнь</p>
+                    <ul v-for="(item, index) in sixMonth">
+                      <li style="font-size: 12px">
+                        {{ index + 1 }} - {{ item.name }}
+                        <DropDown
+                          @onClick="
+                            ({ id }) =>
+                              onPickedOptionsTask(id, item.id, item.name)
+                          "
+                        />
+                      </li>
+                    </ul>
+                  </template>
+                </Card>
+              </div>
+            </template>
+          </Card>
+
+          <Card style="width: 48%; height: 300px; margin-right: 5px">
+            <template #default>
+              <h4 style="text-align: center">Q3</h4>
+              <div style="display: flex; justify-content: space-around">
+                <Card style="width: 100%">
+                  <template #default>
+                    <p style="font-weight: bold">Июль</p>
+                    <ul v-for="item in sevenMonth">
+                      <li>
+                        {{ item.name }}
+                        <DropDown
+                          @onClick="
+                            ({ id }) =>
+                              onPickedOptionsTask(id, item.id, item.name)
+                          "
+                        />
+                      </li>
+                    </ul>
+                  </template>
+                </Card>
+
+                <Card style="width: 100%">
+                  <template #default>
+                    <p style="font-weight: bold">Август</p>
+                    <ul v-for="item in ethMonth">
+                      <li>
+                        {{ item.name }}
+                        <DropDown
+                          @onClick="
+                            ({ id }) =>
+                              onPickedOptionsTask(id, item.id, item.name)
+                          "
+                        />
+                      </li>
+                    </ul>
+                  </template>
+                </Card>
+
+                <Card style="width: 100%">
+                  <template #default>
+                    <p style="font-weight: bold">Сентябрь</p>
+                    <ul v-for="item in nineMonth">
+                      <li>
+                        {{ item.name }}
+                        <DropDown
+                          @onClick="
+                            ({ id }) =>
+                              onPickedOptionsTask(id, item.id, item.name)
+                          "
+                        />
+                      </li>
+                    </ul>
+                  </template>
+                </Card>
+              </div>
+            </template>
+          </Card>
+
+          <Card style="width: 50%; height: 300px">
+            <template #default>
+              <h4 style="text-align: center">Q4</h4>
+              <div style="display: flex; justify-content: space-around">
+                <Card style="width: 100%">
+                  <template #default>
+                    <p style="font-weight: bold">Октябрь</p>
+                    <ul v-for="item in tenMonth">
+                      <li>
+                        {{ item.name }}
+                        <DropDown
+                          @onClick="
+                            ({ id }) =>
+                              onPickedOptionsTask(id, item.id, item.name)
+                          "
+                        />
+                      </li>
+                    </ul>
+                  </template>
+                </Card>
+
+                <Card style="width: 100%">
+                  <template #default>
+                    <p style="font-weight: bold">Ноябрь</p>
+                    <ul v-for="item in elevenMonth">
+                      <li>
+                        {{ item.name }}
+                        <DropDown
+                          @onClick="
+                            ({ id }) =>
+                              onPickedOptionsTask(id, item.id, item.name)
+                          "
+                        />
+                      </li>
+                    </ul>
+                  </template>
+                </Card>
+
+                <Card style="width: 100%">
+                  <template #default>
+                    <p style="font-weight: bold">Декабрь</p>
+                    <ul v-for="item in fdaMonth">
+                      <li>
+                        {{ item.name }}
+                        <DropDown
+                          @onClick="
+                            ({ id }) =>
+                              onPickedOptionsTask(id, item.id, item.name)
+                          "
+                        />
+                      </li>
+                    </ul>
+                  </template>
+                </Card>
+              </div>
             </template>
           </Card>
         </div>
-      </template>
-    </Card>
-
-    <h4>Планы на 4-е квартала</h4>
-
-    <Button @click="openModal">Создание задачи</Button>
-    <br />
-
-    <div style="display: flex; flex-wrap: wrap">
-      <Card
-        style="width: 48%; height: 300px; margin-right: 5px; margin-bottom: 5px"
-      >
-        <template #default>
-          <h4 style="text-align: center">Q1</h4>
-          <div
-            style="
-              display: flex;
-              justify-content: space-around;
-              margin-bottom: 100px;
-            "
-          >
-            <Card style="width: 100%">
-              <template #default>
-                <p style="font-weight: bold">Январь</p>
-                <ul v-for="item in firstMonth">
-                  <li>
-                    {{ item.name }}
-                    <DropDown
-                      @onClick="
-                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
-                      "
-                    />
-                  </li>
-                </ul>
-              </template>
-            </Card>
-
-            <Card style="width: 100%">
-              <template #default>
-                <p style="font-weight: bold">Февраль</p>
-                <ul v-for="item in secondMonth">
-                  <li>
-                    {{ item.name }}
-                    <DropDown
-                      @onClick="
-                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
-                      "
-                    />
-                  </li></ul
-              ></template>
-            </Card>
-
-            <Card style="width: 100%">
-              <template #default>
-                <p style="font-weight: bold">Март</p>
-                <ul v-for="item in thorMonth">
-                  <li>
-                    {{ item.name }}
-                    <DropDown
-                      @onClick="
-                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
-                      "
-                    />
-                  </li>
-                </ul>
-              </template>
-            </Card>
-          </div>
-        </template>
-      </Card>
-
-      <Card style="width: 50%; height: 300px; margin-bottom: 5px">
-        <template #default>
-          <h4 style="text-align: center">Q2</h4>
-          <div
-            style="
-              display: flex;
-              justify-content: space-around;
-              margin-bottom: 100px;
-            "
-          >
-            <Card style="width: 100%">
-              <template #default>
-                <p style="font-weight: bold">Апрель</p>
-                <ul v-for="item in forMonth">
-                  <li style="font-size: 12px">
-                    {{ item.name }}
-                    <DropDown
-                      @onClick="
-                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
-                      "
-                    />
-                  </li>
-                </ul>
-              </template>
-            </Card>
-
-            <Card style="width: 100%">
-              <template #default>
-                <p style="font-weight: bold">Май</p>
-                <ul v-for="(item, index) in fiveMonth">
-                  <li style="font-size: 12px">
-                    {{ index + 1 }} - {{ item.name }}
-                    <DropDown
-                      @onClick="
-                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
-                      "
-                    />
-                  </li>
-                </ul>
-              </template>
-            </Card>
-            <Card style="width: 100%">
-              <template #default>
-                <p style="font-weight: bold">Июнь</p>
-                <ul v-for="(item, index) in sixMonth">
-                  <li style="font-size: 12px">
-                    {{ index + 1 }} - {{ item.name }}
-                    <DropDown
-                      @onClick="
-                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
-                      "
-                    />
-                  </li>
-                </ul>
-              </template>
-            </Card>
-          </div>
-        </template>
-      </Card>
-
-      <Card style="width: 48%; height: 300px; margin-right: 5px">
-        <template #default>
-          <h4 style="text-align: center">Q3</h4>
-          <div style="display: flex; justify-content: space-around">
-            <Card style="width: 100%">
-              <template #default>
-                <p style="font-weight: bold">Июль</p>
-                <ul v-for="item in sevenMonth">
-                  <li>
-                    {{ item.name }}
-                    <DropDown
-                      @onClick="
-                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
-                      "
-                    />
-                  </li>
-                </ul>
-              </template>
-            </Card>
-
-            <Card style="width: 100%">
-              <template #default>
-                <p style="font-weight: bold">Август</p>
-                <ul v-for="item in ethMonth">
-                  <li>
-                    {{ item.name }}
-                    <DropDown
-                      @onClick="
-                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
-                      "
-                    />
-                  </li>
-                </ul>
-              </template>
-            </Card>
-
-            <Card style="width: 100%">
-              <template #default>
-                <p style="font-weight: bold">Сентябрь</p>
-                <ul v-for="item in nineMonth">
-                  <li>
-                    {{ item.name }}
-                    <DropDown
-                      @onClick="
-                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
-                      "
-                    />
-                  </li>
-                </ul>
-              </template>
-            </Card>
-          </div>
-        </template>
-      </Card>
-
-      <Card style="width: 50%; height: 300px">
-        <template #default>
-          <h4 style="text-align: center">Q4</h4>
-          <div style="display: flex; justify-content: space-around">
-            <Card style="width: 100%">
-              <template #default>
-                <p style="font-weight: bold">Октябрь</p>
-                <ul v-for="item in tenMonth">
-                  <li>
-                    {{ item.name }}
-                    <DropDown
-                      @onClick="
-                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
-                      "
-                    />
-                  </li>
-                </ul>
-              </template>
-            </Card>
-
-            <Card style="width: 100%">
-              <template #default>
-                <p style="font-weight: bold">Ноябрь</p>
-                <ul v-for="item in elevenMonth">
-                  <li>
-                    {{ item.name }}
-                    <DropDown
-                      @onClick="
-                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
-                      "
-                    />
-                  </li>
-                </ul>
-              </template>
-            </Card>
-
-            <Card style="width: 100%">
-              <template #default>
-                <p style="font-weight: bold">Декабрь</p>
-                <ul v-for="item in fdaMonth">
-                  <li>
-                    {{ item.name }}
-                    <DropDown
-                      @onClick="
-                        ({ id }) => onPickedOptionsTask(id, item.id, item.name)
-                      "
-                    />
-                  </li>
-                </ul>
-              </template>
-            </Card>
-          </div>
-        </template>
-      </Card>
-    </div>
-  </div>
+      </div>
+    </template>
+  </LifeCyclePage>
 </template>
