@@ -301,7 +301,8 @@ const onPickedOptionsTask = async (id, idTask, name) => {
 };
 
 const changePickMonth = (event) => {
-  console.log(event);
+  console.log(event.target.value);
+  pickedMonth.value = event.target.value;
 };
 
 onMounted(() => {
