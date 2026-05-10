@@ -1,4 +1,4 @@
-import type { QueryClient } from "@tanstack/vue-query";
+import { type QueryClient, useQuery } from "@tanstack/vue-query";
 import { caseYearController } from "../controllers/case-year.controller.ts";
 
 export const caseYearQuery = {

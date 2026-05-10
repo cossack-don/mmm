@@ -59,7 +59,7 @@ export const caseYearTargetsQuery = {
     //   // Error or success... doesn't matter!
     // },
   }),
-  GET_LIST: (route: any) => ({
+  GET_LIST: (route: any, enabled?: any) => ({
     queryKey: ["getListCaseYearTargets"],
     queryFn: async () => {
       const data = await caseYearTargetsController.getList(
@@ -68,5 +68,6 @@ export const caseYearTargetsQuery = {
 
       return data;
     },
+    enabled: enabled,
   }),
 };

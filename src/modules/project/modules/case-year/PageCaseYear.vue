@@ -3,23 +3,32 @@ import { computed, ref, watch } from "vue";
 import { Modal, Card, Button, DropDown } from "../../../../components/ui";
 import { LifeCyclePage } from "../../../../components/pages";
 import { useRoute } from "vue-router";
-import {
-  useQueryClient,
-  useQuery,
-  useMutation,
-  useQueries,
-} from "@tanstack/vue-query";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/vue-query";
 import { caseYearTargetsQuery } from "./query/case-year-targets.query.ts";
 import { caseYearQuery } from "./query/case-year.query.ts";
 import { listMonths, Q } from "./static.ts";
 
+import { chainRequestsQuery } from "./query/chain-requests.query.ts";
+
 const route = useRoute();
 const queryClient = useQueryClient();
 
+// V1 changeRequestsQuery ПРИМЕР ЦЕПОЧКИ ЗАПРОСОВ ЗАВИСЯЩИХ ДРУГ ОТ ДРУГА
+const { data: lists, isPending } = useQuery(
+  chainRequestsQuery.CHAIN_REQUESTS(route),
+);
+
+// TODO ПРИМЕР ЦЕПОЧКИ ЗАПРОСОВ ЗАВИСЯЩИХ ДРУГ ОТ ДРУГА V2
+const { data: list4 } = useQuery(caseYearQuery.GET_LIST(route));
+const enabled = computed(() => !!list4.value);
+const { data: list5 } = useQuery(caseYearTargetsQuery.GET_LIST(route, enabled));
+
+// ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ======
 // TODO CRUD list case year
 const { data: listCaseYear, isPending: isLoadingCaseYear } = useQuery(
   caseYearQuery.GET_LIST(route),
 );
+
 const { mutate: deleteByIdCaseYearTask } = useMutation(
   caseYearQuery.DELETE(queryClient),
 );
