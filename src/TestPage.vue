@@ -10,6 +10,7 @@
     </Card>
 
     <div style="display: flex; overflow: scroll; width: 1400px">
+      тут будет скролл на мобиле
       <Card v-for="day in 7" :key="day" styles="width: 100%">
         <template #default>
           <ul>

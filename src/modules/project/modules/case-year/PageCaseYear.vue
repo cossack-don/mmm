@@ -9,9 +9,34 @@ import { caseYearQuery } from "./query/case-year.query.ts";
 import { listMonths, Q } from "./static.ts";
 
 import { chainRequestsQuery } from "./query/chain-requests.query.ts";
+import { caseYearTargetsController } from "./controllers/case-year-targets.controller.ts";
 
 const route = useRoute();
 const queryClient = useQueryClient();
+
+// TODO POLLING EXAMPLE
+const MAX_COUNT_POLLING = 10;
+const TIME_POLLING = 2_000; // 2 секунды
+const START_COUNT_PILLING = ref(0);
+//
+// const { data: statePolling } = useQuery({
+//   queryKey: ["getListCaseYearTargets"],
+//   queryFn: async () => {
+//     START_COUNT_PILLING.value++;
+//     console.log(START_COUNT_PILLING.value, "counter-polling");
+//     const data = await caseYearTargetsController.getList(
+//       route.params.idProject as string,
+//     );
+//
+//     return data;
+//   },
+//   refetchInterval: (query) => {
+//     //тут бизнес логика при котрой прерывать запрос polling
+//     if (query.state.data?.status === "complete") return false;
+//     if (START_COUNT_PILLING.value >= MAX_COUNT_POLLING) return false;
+//     return TIME_POLLING;
+//   },
+// });
 
 // V1 changeRequestsQuery ПРИМЕР ЦЕПОЧКИ ЗАПРОСОВ ЗАВИСЯЩИХ ДРУГ ОТ ДРУГА
 const { data: lists, isPending } = useQuery(
@@ -43,6 +68,7 @@ const { mutate: createCaseYearTask } = useMutation(
 
 // TODO а тут есть ли обработка ошибки??? в useQuery или они только в useMutation ???
 // TODO CRUD list case year targets
+
 const { data: listCaseYearTargets, isPending: isLoadingCaseYearTargets } =
   useQuery(caseYearTargetsQuery.GET_LIST(route));
 
