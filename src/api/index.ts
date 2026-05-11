@@ -1,3 +1,3 @@
-import { serviceCaseYear, serviceProject } from "./services";
+import { serviceCaseYear, serviceProject, serviceTodos } from "./services";
 
-export { serviceProject, serviceCaseYear };
+export { serviceProject, serviceCaseYear, serviceTodos };

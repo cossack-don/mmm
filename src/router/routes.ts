@@ -64,9 +64,20 @@ export const routes = [
       {
         path: "todos",
         name: "todos",
-        component: () => import("../NavigationPage.vue"),
+        component: () =>
+          import("../modules/project/modules/todos/PageTodos.vue"),
         meta: {
           nameRu: "Заметки",
+          // layout: "NavigationLayout",
+        },
+      },
+      {
+        path: "finances",
+        name: "finances",
+        component: () =>
+          import("../modules/project/modules/finances/PageFinances.vue"),
+        meta: {
+          nameRu: "Финансы",
           // layout: "NavigationLayout",
         },
       },
@@ -79,15 +90,7 @@ export const routes = [
           // layout: "NavigationLayout",
         },
       },
-      {
-        path: "finances",
-        name: "finances",
-        component: () => import("../NavigationPage.vue"),
-        meta: {
-          nameRu: "Финансы",
-          // layout: "NavigationLayout",
-        },
-      },
+
       {
         path: "spirituality",
         name: "spirituality",
@@ -98,9 +101,9 @@ export const routes = [
         },
       },
       {
-        path: "relationship",
-        name: "relationship",
-        component: () => import("../NavigationPage.vue"),
+        path: "relationship3",
+        name: "relationship3",
+        component: () => import("../Test.vue"),
         meta: {
           nameRu: "отдяых",
           // layout: "NavigationLayout",

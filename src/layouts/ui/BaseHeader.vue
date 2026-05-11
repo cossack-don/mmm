@@ -15,6 +15,17 @@
     </div>
 
     <div>потом добавить play write or cypress from E2E</div>
+
+    <div style="display: flex; align-items: center; justify-content: center">
+      <Card style="background: #b4ea49; font-weight: bold">
+        <template #default>
+          <p>
+            Цели жизни сейчас: 1) Своя Квартира 1-шка LVL_1 2) Пассивный доход в
+            месяц
+          </p>
+        </template>
+      </Card>
+    </div>
   </header>
 </template>
 
@@ -27,4 +38,6 @@
   padding-bottom: 10px;
 }
 </style>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { Card } from "../../components/ui";
+</script>
