@@ -1,10 +1,15 @@
 import { API } from "../createAxios";
 
 export const serviceTodos = {
-  getList: (idProject: any) => {
+  getList: (idProject: any, limit = 10, offset = 10, total = null) => {
     console.log(1);
     return API({
       url: `/project/${idProject}/todos`,
+      params: {
+        limit: limit,
+        offset: offset,
+        total: total,
+      },
       method: "GET",
     });
   },
