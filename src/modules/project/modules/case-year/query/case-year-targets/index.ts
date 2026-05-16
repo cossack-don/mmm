@@ -1,11 +1,11 @@
-import { caseYearGetQuery } from "./case-year.get.query.ts";
-import { caseYearPostQuery } from "./case-year.post.query.ts";
-import { caseYearDeleteQuery } from "./case-year.delete.query.ts";
-import { caseYearPutQuery } from "./case-year.put.query.ts";
+import { caseYearTargetsGetQuery } from "./case-year-targets.get.query";
+import { caseYearTargetsPostQuery } from "./case-year-targets.post.query";
+import { caseYearTargetsDeleteQuery } from "./case-year-targets.delete.query";
+import { caseYearTargetsPutQuery } from "./case-year-targets.put.query";
 
 export {
-  caseYearGetQuery,
-  caseYearPostQuery,
-  caseYearDeleteQuery,
-  caseYearPutQuery,
+  caseYearTargetsGetQuery,
+  caseYearTargetsPostQuery,
+  caseYearTargetsDeleteQuery,
+  caseYearTargetsPutQuery,
 };

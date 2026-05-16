@@ -1,4 +1,4 @@
-import { caseYearTargetsKeys } from "./case-year-targets.keys.query.ts";
+import { caseYearTargetsKeys } from "./case-year-targets.keys.query";
 import { serviceCaseYearTargets } from "../../../../../../api/services";
 
 export const caseYearTargetsDeleteQuery = {

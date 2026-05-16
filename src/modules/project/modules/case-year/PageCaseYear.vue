@@ -3,19 +3,23 @@ import { computed, ref } from "vue";
 import { Modal, Card, Button, DropDown } from "../../../../components/ui";
 import { LifeCyclePage } from "../../../../components/pages";
 import { useRoute } from "vue-router";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/vue-query";
-import { caseYearQuery } from "./query/case-year.query.ts";
-import { listMonths, Q } from "./static.ts";
+import { useQuery, useMutation } from "@tanstack/vue-query";
 import {
   caseYearDeleteQuery,
-  caseYearGetQuery,
   caseYearPostQuery,
   caseYearPutQuery,
+  caseYearGetQuery,
+} from "./query/case-year";
+import { listMonths, Q } from "./static.ts";
+import {
+  caseYearTargetsDeleteQuery,
+  caseYearTargetsGetQuery,
+  caseYearTargetsPostQuery,
+  caseYearTargetsPutQuery,
 } from "./query/case-year-targets";
 import { chainRequestsQuery } from "./query/chain-requests.query.ts";
 
 const route = useRoute();
-const queryClient = useQueryClient();
 
 // TODO POLLING EXAMPLE
 const MAX_COUNT_POLLING = 10;
@@ -56,28 +60,31 @@ const START_COUNT_PILLING = ref(0);
 // ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ======
 // TODO CRUD list case year
 const { data: listCaseYear, isPending: isLoadingCaseYear } = useQuery(
-  caseYearQuery.GET_LIST(route),
+  caseYearGetQuery.GET_LIST(route),
 );
-
-const { mutate: deleteByIdCaseYearTask } = useMutation(caseYearQuery.DELETE());
-
-const { mutate: putByIdCaseYearTask } = useMutation(caseYearQuery.PUT());
-
-const { mutate: createCaseYearTask } = useMutation(caseYearQuery.POST());
+const { mutate: deleteByIdCaseYearTask } = useMutation(
+  caseYearDeleteQuery.DELETE(),
+);
+const { mutate: putByIdCaseYearTask } = useMutation(caseYearPutQuery.PUT());
+const { mutate: createCaseYearTask } = useMutation(caseYearPostQuery.POST());
 
 // TODO а тут есть ли обработка ошибки??? в useQuery или они только в useMutation ???
 // TODO CRUD list case year targets
 
 const { data: listCaseYearTargets, isPending: isLoadingCaseYearTargets } =
-  useQuery(caseYearGetQuery.GET_LIST(route));
+  useQuery(caseYearTargetsGetQuery.GET_LIST(route));
 
 const { mutate: deleteByIdCaseYearTarget } = useMutation(
-  caseYearDeleteQuery.DELETE(),
+  caseYearTargetsDeleteQuery.DELETE(),
 );
 
-const { mutate: putByIdCaseYearTarget } = useMutation(caseYearPutQuery.PUT());
+const { mutate: putByIdCaseYearTarget } = useMutation(
+  caseYearTargetsPutQuery.PUT(),
+);
 
-const { mutate: createCaseYearTarget } = useMutation(caseYearPostQuery.POST());
+const { mutate: createCaseYearTarget } = useMutation(
+  caseYearTargetsPostQuery.POST(),
+);
 
 const getMonthData = (quarterIndex: number, month: number) => {
   return computed(() => {
