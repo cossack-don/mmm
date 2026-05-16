@@ -14,13 +14,13 @@ const queryClient = new QueryClient({
       // taleTime: 5 * 60 * 1000, // 5 минут
       // gcTime: 10 * 60 * 1000, // 10 минут
       retry: false,
-      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-      refetchOnWindowFocus: false,
-      refetchOnMount: true,
-      refetchOnReconnect: true,
-      enabled: true,
-      networkMode: "online",
-      throwOnError: false,
+      // retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+      // refetchOnWindowFocus: false,
+      // refetchOnMount: true,
+      // refetchOnReconnect: true,
+      // enabled: true,
+      // networkMode: "online",
+      // throwOnError: false,
     },
     // mutations: {
     //   retry: 1,

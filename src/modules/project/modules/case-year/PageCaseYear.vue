@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { Modal, Card, Button, DropDown } from "../../../../components/ui";
 import { LifeCyclePage } from "../../../../components/pages";
 import { useRoute } from "vue-router";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/vue-query";
-import { caseYearTargetsQuery } from "./query/case-year-targets.query.ts";
 import { caseYearQuery } from "./query/case-year.query.ts";
 import { listMonths, Q } from "./static.ts";
-
+import {
+  caseYearDeleteQuery,
+  caseYearGetQuery,
+  caseYearPostQuery,
+  caseYearPutQuery,
+} from "./query/case-year-targets";
 import { chainRequestsQuery } from "./query/chain-requests.query.ts";
-import { caseYearTargetsController } from "./controllers/case-year-targets.controller.ts";
 
 const route = useRoute();
 const queryClient = useQueryClient();
@@ -39,14 +42,16 @@ const START_COUNT_PILLING = ref(0);
 // });
 
 // V1 changeRequestsQuery ПРИМЕР ЦЕПОЧКИ ЗАПРОСОВ ЗАВИСЯЩИХ ДРУГ ОТ ДРУГА
-const { data: lists, isPending } = useQuery(
-  chainRequestsQuery.CHAIN_REQUESTS(route),
-);
-
-// TODO ПРИМЕР ЦЕПОЧКИ ЗАПРОСОВ ЗАВИСЯЩИХ ДРУГ ОТ ДРУГА V2
-const { data: list4 } = useQuery(caseYearQuery.GET_LIST(route));
-const enabled = computed(() => !!list4.value);
-const { data: list5 } = useQuery(caseYearTargetsQuery.GET_LIST(route, enabled));
+// const { data: lists, isPending } = useQuery(
+//   chainRequestsQuery.CHAIN_REQUESTS(route),
+// );
+//
+// // TODO ПРИМЕР ЦЕПОЧКИ ЗАПРОСОВ ЗАВИСЯЩИХ ДРУГ ОТ ДРУГА V2
+// const { data: list4 } = useQuery(caseYearQuery.GET_LIST(route));
+// const enabled = computed(() => !!list4.value);
+// const { data: list5 } = useQuery(
+//   caseYearTargetsGetQuery.GET_LIST(route, enabled),
+// );
 
 // ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ======
 // TODO CRUD list case year
@@ -54,35 +59,25 @@ const { data: listCaseYear, isPending: isLoadingCaseYear } = useQuery(
   caseYearQuery.GET_LIST(route),
 );
 
-const { mutate: deleteByIdCaseYearTask } = useMutation(
-  caseYearQuery.DELETE(queryClient),
-);
+const { mutate: deleteByIdCaseYearTask } = useMutation(caseYearQuery.DELETE());
 
-const { mutate: putByIdCaseYearTask } = useMutation(
-  caseYearQuery.PUT(queryClient),
-);
+const { mutate: putByIdCaseYearTask } = useMutation(caseYearQuery.PUT());
 
-const { mutate: createCaseYearTask } = useMutation(
-  caseYearQuery.POST(queryClient),
-);
+const { mutate: createCaseYearTask } = useMutation(caseYearQuery.POST());
 
 // TODO а тут есть ли обработка ошибки??? в useQuery или они только в useMutation ???
 // TODO CRUD list case year targets
 
 const { data: listCaseYearTargets, isPending: isLoadingCaseYearTargets } =
-  useQuery(caseYearTargetsQuery.GET_LIST(route));
+  useQuery(caseYearGetQuery.GET_LIST(route));
 
 const { mutate: deleteByIdCaseYearTarget } = useMutation(
-  caseYearTargetsQuery.DELETE(queryClient),
+  caseYearDeleteQuery.DELETE(),
 );
 
-const { mutate: putByIdCaseYearTarget } = useMutation(
-  caseYearTargetsQuery.PUT(queryClient),
-);
+const { mutate: putByIdCaseYearTarget } = useMutation(caseYearPutQuery.PUT());
 
-const { mutate: createCaseYearTarget } = useMutation(
-  caseYearTargetsQuery.POST(queryClient),
-);
+const { mutate: createCaseYearTarget } = useMutation(caseYearPostQuery.POST());
 
 const getMonthData = (quarterIndex: number, month: number) => {
   return computed(() => {

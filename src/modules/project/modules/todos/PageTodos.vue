@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
-import { todosQuery } from "../../modules/todos/query/todos.query.ts";
+import { useMutation, useQuery } from "@tanstack/vue-query";
+import { todosDeleteQuery, todosGetQuery } from "../../modules/todos/query";
 import { useRoute } from "vue-router";
 import { Modal, Card, Button, DropDown } from "../../../../components/ui";
 
 const route = useRoute();
-const queryClient = useQueryClient();
 
-const { data } = useQuery(todosQuery.GET_LIST(route));
-const { mutate: deleteByIdTodo } = useMutation(todosQuery.DELETE(queryClient));
+const { data } = useQuery(todosGetQuery.GET_LIST(route));
+const { mutate: deleteByIdTodo } = useMutation(todosDeleteQuery.DELETE());
 
 const onDeleteByIdTodo = (idTask: string | number) => {
   deleteByIdTodo({
@@ -23,7 +22,7 @@ const onDeleteByIdTodo = (idTask: string | number) => {
     <h3>Заметки</h3>
     <Card v-for="item in data" :key="item.id" styles="width: 100%">
       <template #default>
-        {{ item.name }}
+        <p>{{ item.name }}</p>
         <Button @click="onDeleteByIdTodo(item.id)">DEL</Button>
       </template>
     </Card>
