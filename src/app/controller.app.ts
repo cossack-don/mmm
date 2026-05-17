@@ -1,5 +1,5 @@
-import { useStatusesLifeCycle } from "../composables";
-import { serviceCheckHealthApp } from "../api/serviceCheckHealthApp.ts";
+import { useStatusesLifeCycle } from "@composables";
+import { checkHealthService } from "@api";
 
 export const controllerApp = () => {
   const {
@@ -17,7 +17,7 @@ export const controllerApp = () => {
       setStatusLifeCycle("isError", false);
       setStatusLifeCycle("isLoading", true);
 
-      const { data } = await serviceCheckHealthApp.status();
+      const { data } = await checkHealthService.status();
 
       if (data) {
         setStatusLifeCycle("isSuccess", true);

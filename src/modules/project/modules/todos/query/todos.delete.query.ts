@@ -1,4 +1,4 @@
-import { todosService } from "../../../../../api";
+import { todosService } from "@api";
 import { todosKeysQuery } from "./todos.keys.query.ts";
 
 export const todosDeleteQuery = {

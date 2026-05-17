@@ -1,24 +1,26 @@
-import { todosService } from "@api";
-import { todosKeysQuery } from "./todos.keys.query";
+// Файл: projects.get.query.ts
+// Создан: 5/17/2026, 8:14:00 PM
+// Операция: GET
+
+import { projectService } from "@api";
+import { projectsKeys } from "../query/projects.keys.query.ts";
 import type { RouteLocationNormalized } from "vue-router";
 
-export const todosGetQuery = {
-  GET_LIST: (route: RouteLocationNormalized) => ({
-    queryKey: [todosKeysQuery.getListTodos],
+export const projectsGetQuery = {
+  GET_LIST: () => ({
+    queryKey: [projectsKeys.getListProjects],
     queryFn: async () => {
-      const { data } = await todosService.getList(
-        route.params.idProject as string,
-      );
-
-      return data.data;
+      const { data } = await projectService.getList();
+      return data;
     },
   }),
+
   GET_LIST_INFINITY_SCROLL: (route: RouteLocationNormalized) => ({
-    queryKey: [todosKeysQuery.getListTodosInfinityScroll],
+    queryKey: [projectsKeys.getListProjectsInfinityScroll],
     queryFn: async ({ pageParam = 0 }) => {
       const params = { limit: 5, offset: pageParam * 5 };
 
-      const { data } = await todosService.getList(
+      const { data } = await projectService.getList(
         route.params.idProject as string,
         params.limit,
         params.offset,

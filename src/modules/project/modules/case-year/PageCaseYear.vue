@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { Modal, Card, Button, DropDown } from "../../../../components/ui";
-import { LifeCyclePage } from "../../../../components/pages";
+import { Modal, Card, Button, DropDown } from "@components-ui";
+import { LifeCyclePage } from "@components-pages";
 import { useRoute } from "vue-router";
 import { useQuery, useMutation } from "@tanstack/vue-query";
 import {
@@ -9,14 +9,14 @@ import {
   caseYearPostQuery,
   caseYearPutQuery,
   caseYearGetQuery,
-} from "./query/case-year";
+} from "@project/case-year/query/case-year";
 import { listMonths, Q } from "./static.ts";
 import {
   caseYearTargetsDeleteQuery,
   caseYearTargetsGetQuery,
   caseYearTargetsPostQuery,
   caseYearTargetsPutQuery,
-} from "./query/case-year-targets";
+} from "@project/case-year/query/case-year-targets";
 import { chainRequestsQuery } from "./query/chain-requests.query.ts";
 
 const route = useRoute();

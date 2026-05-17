@@ -4,11 +4,28 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "types": ["vite/client"],
 
+    /* Пути и алиасы */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+//      "@components-ui/*": ["./src/components/ui/*"],
+      "@api": ["./src/api/index.ts"],
+      "@project": ["./src/modules/project/modules"],
+
+      "@components-ui": ["./src/components/ui/index.ts"],
+      "@components-pages": ["./src/components/pages/index.ts"],
+
+      "@constants": ["./src/constants/index.ts"],
+      "@composables": ["./src/composables/index.ts"]
+    },
+
     /* Linting */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+
   },
   "include": [
     "src/**/*.ts",

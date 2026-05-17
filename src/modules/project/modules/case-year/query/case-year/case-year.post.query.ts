@@ -1,5 +1,5 @@
 import { caseYearTargetsKeys } from "./case-year.keys.query.ts";
-import { caseYearService } from "../../../../../../api";
+import { caseYearService } from "@api";
 
 export const caseYearPostQuery = {
   POST: () => ({

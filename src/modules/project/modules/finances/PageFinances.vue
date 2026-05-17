@@ -70,7 +70,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Card, Button } from "../../../../components/ui";
+import { Card, Button } from "@components-ui";
 import { Pie } from "vue-chartjs";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 

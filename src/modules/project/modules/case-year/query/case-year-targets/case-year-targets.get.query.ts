@@ -1,4 +1,4 @@
-import { caseYearTargetsService } from "../../../../../../api/services";
+import { caseYearTargetsService } from "@api";
 import type { RouteLocationNormalized } from "vue-router";
 import { caseYearTargetsKeys } from "./case-year-targets.keys.query";
 

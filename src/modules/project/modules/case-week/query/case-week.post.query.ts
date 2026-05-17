@@ -1,4 +1,4 @@
-import { caseWeekService } from "../../../../../api";
+import { caseWeekService } from "@api";
 import { caseWeekKeys } from "./case-week.keys.query.ts";
 
 export const caseWeekPostQuery = {

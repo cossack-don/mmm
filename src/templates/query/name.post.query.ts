@@ -1,10 +1,10 @@
 import { caseWeekService } from "@api";
 import { caseWeekKeys } from "./case-week.keys.query.ts";
 
-export const caseWeekDeleteQuery = {
-  DELETE: () => ({
-    mutationFn: async ({ idProject, idTask }: any) => {
-      await caseWeekService.deleteById(idProject, idTask);
+export const namePostQuery = {
+  POST: () => ({
+    mutationFn: async ({ idProject, name, day }: any) => {
+      await caseWeekService.createTaskDay(idProject, name, day);
     },
     // onMutate: (variables, context) => {
     // },
@@ -12,6 +12,7 @@ export const caseWeekDeleteQuery = {
     // },
     onSuccess: (data, variables, onMutateResult, context) => {
       const queryClient = context.client;
+
       queryClient.invalidateQueries({
         queryKey: [caseWeekKeys.getListCaseWeek],
       });

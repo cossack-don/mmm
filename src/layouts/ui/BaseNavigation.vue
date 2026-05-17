@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { routes } from "../../router/routes";
+import { routes } from "@/router/routes";
 import { computed } from "vue";
 
 const listNavigation = computed(() => {

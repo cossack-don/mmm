@@ -1,6 +1,6 @@
-import { API } from "./createAxios";
+import { API } from "@api/createAxios";
 
-export const serviceCheckHealthApp = {
+export const checkHealthService = {
   status: () => {
     return API({
       url: "/check-health",

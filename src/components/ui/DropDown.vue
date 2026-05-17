@@ -17,7 +17,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 
 const props = defineProps({
@@ -59,7 +59,7 @@ const selectOption = (paylod) => {
   display: flex;
   align-items: center;
   gap: 8px;
-  //min-width: 150px;
+
   justify-content: center;
 }
 

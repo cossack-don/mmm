@@ -1,5 +1,5 @@
 // import { caseYearTargetsKeys } from "./case-year.keys.query.ts";
-// import { serviceCaseYear } from "../../../../../../api";
+// import { serviceCaseYear } from "@api";
 
 export const caseWeekPutQuery = {
   PUT: () => ({

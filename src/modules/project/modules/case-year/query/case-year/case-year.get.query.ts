@@ -1,6 +1,6 @@
 import type { RouteLocationNormalized } from "vue-router";
 import { caseYearTargetsKeys } from "./case-year.keys.query.ts";
-import { caseYearService } from "../../../../../../api";
+import { caseYearService } from "@api";
 
 export const caseYearGetQuery = {
   GET_LIST: (route: RouteLocationNormalized) => ({

@@ -2,7 +2,7 @@ import type { RouteLocationNormalized } from "vue-router";
 import { caseWeekService, caseYearService } from "@api";
 import { caseWeekKeys } from "./case-week.keys.query.ts";
 
-export const caseWeekGetQuery = {
+export const nameGetQuery = {
   GET_LIST: (route: RouteLocationNormalized) => ({
     queryKey: [caseWeekKeys.getListCaseWeek],
     queryFn: async () => {

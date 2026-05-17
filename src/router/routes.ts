@@ -83,16 +83,6 @@ export const routes = [
         },
       },
       {
-        path: "dadadadad",
-        name: "dadadadad",
-        component: () => import("../NavigationPage.vue"),
-        meta: {
-          nameRu: "------",
-          // layout: "NavigationLayout",
-        },
-      },
-
-      {
         path: "spirituality",
         name: "spirituality",
         component: () =>

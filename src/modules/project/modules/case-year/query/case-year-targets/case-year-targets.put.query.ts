@@ -1,5 +1,5 @@
 import { caseYearTargetsKeys } from "./case-year-targets.keys.query";
-import { caseYearTargetsService } from "../../../../../../api/services";
+import { caseYearTargetsService } from "@api";
 
 export const caseYearTargetsPutQuery = {
   PUT: () => ({
