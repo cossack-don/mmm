@@ -1,6 +1,6 @@
 import { API } from "../createAxios";
 
-export const serviceProject = {
+export const projectService = {
   getList: () => {
     return API({
       url: "/project",

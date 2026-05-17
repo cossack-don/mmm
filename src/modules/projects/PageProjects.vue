@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUpdated, ref } from "vue";
 import { serviceTodos } from "../../api/serviceTodos";
-import { serviceProject } from "../../api";
+import { projectService } from "../../api";
 import { LifeCyclePage, ErrorPage, DefaultPage } from "../../components/pages";
 import { useStatusesLifeCycle } from "../../composables";
 
@@ -48,19 +48,19 @@ const controllerTodoList = {
 
 const listProjects = ref([]);
 const getListProjects = async () => {
-  const { data } = await serviceProject.getList();
+  const { data } = await projectService.getList();
   listProjects.value = data;
   setStatusLifeCycle("isSuccess", true);
 };
 
 const nameProject = ref("");
 const createProject = async () => {
-  await serviceProject.createProject(nameProject.value);
+  await projectService.createProject(nameProject.value);
   await getListProjects();
 };
 
 const deleteByIdProject = async (id: number | string) => {
-  await serviceProject.deleteById(id);
+  await projectService.deleteById(id);
   await getListProjects();
 };
 onMounted(() => {

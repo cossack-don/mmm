@@ -1,6 +1,6 @@
 import { API } from "../createAxios";
 
-export const serviceCaseYearTargets = {
+export const caseYearTargetsService = {
   getList: (idProject: string | number) => {
     return API({
       url: `/project/${idProject}/case-year-targets`,

@@ -42,9 +42,10 @@ export const routes = [
         },
       },
       {
-        path: "case-month",
-        name: "case-month",
-        component: () => import("../TestPage.vue"),
+        path: "case-week",
+        name: "case-week",
+        component: () =>
+          import("../modules/project/modules/case-week/PageWeek.vue"),
         meta: {
           nameRu: "Дела на месяц и неделю",
           // layout: "NavigationLayout", //layout: "DefaultLayout",
@@ -94,25 +95,28 @@ export const routes = [
       {
         path: "spirituality",
         name: "spirituality",
-        component: () => import("../NavigationPage.vue"),
+        component: () =>
+          import("../modules/project/modules/spirituality/PageSpirituality.vue"),
         meta: {
           nameRu: "Духовность",
           // layout: "NavigationLayout",
         },
       },
       {
-        path: "relationship3",
-        name: "relationship3",
-        component: () => import("../Test.vue"),
+        path: "relax",
+        name: "relax",
+        component: () =>
+          import("../modules/project/modules/relax/PageRelax.vue"),
         meta: {
-          nameRu: "отдяых",
+          nameRu: "Отдых",
           // layout: "NavigationLayout",
         },
       },
       {
         path: "relationship",
         name: "relationship",
-        component: () => import("../NavigationPage.vue"),
+        component: () =>
+          import("../modules/project/modules/relationship/PageRelationship.vue"),
         meta: {
           nameRu: "Отношения",
           // layout: "NavigationLayout",
@@ -121,7 +125,8 @@ export const routes = [
       {
         path: "schooling",
         name: "schooling",
-        component: () => import("../NavigationPage.vue"),
+        component: () =>
+          import("../modules/project/modules/schooling/PageSchooling.vue"),
         meta: {
           nameRu: "Обучение",
           // layout: "NavigationLayout",
@@ -130,7 +135,8 @@ export const routes = [
       {
         path: "health",
         name: "health",
-        component: () => import("../NavigationPage.vue"),
+        component: () =>
+          import("../modules/project/modules/health/PageHealth.vue"),
         meta: {
           nameRu: "Здоровье",
           // layout: "NavigationLayout",
@@ -139,7 +145,8 @@ export const routes = [
       {
         path: "environment",
         name: "environment",
-        component: () => import("../NavigationPage.vue"),
+        component: () =>
+          import("../modules/project/modules/environment/PageEnvironment.vue"),
         meta: {
           nameRu: "Окружение",
           // layout: "NavigationLayout",
@@ -148,7 +155,8 @@ export const routes = [
       {
         path: "vocation",
         name: "vocation",
-        component: () => import("../NavigationPage.vue"),
+        component: () =>
+          import("../modules/project/modules/vocation/PageVocation.vue"),
         meta: {
           nameRu: "Призвание",
           // layout: "NavigationLayout",

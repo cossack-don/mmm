@@ -31,23 +31,23 @@
   </div>
 </template>
 <script setup lang="ts">
-import { serviceCaseYear } from "./api";
+import { caseYearService } from "./api";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { serviceCaseWeek } from "./api/services";
+import { caseWeekService } from "./api/services";
 import { Modal, Card, Button, DropDown } from "./components/ui";
 
 const route = useRoute();
 
 const listWeek = ref([]);
 const getListWeek = async () => {
-  const { data } = await serviceCaseWeek.getList(route.params.idProject);
+  const { data } = await caseWeekService.getList(route.params.idProject);
   listWeek.value = data;
 };
 
 const list = ref([]);
 const getList = async () => {
-  const { data } = await serviceCaseYear.getList(route.params.idProject);
+  const { data } = await caseYearService.getList(route.params.idProject);
 
   const res = data.filter((item) => {
     if (new Date().getMonth() + 1 === item.month) {

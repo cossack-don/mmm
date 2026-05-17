@@ -1,10 +1,10 @@
-import { todosService } from "../../../../../api";
-import { todosKeysQuery } from "./todos.keys.query.ts";
+import { caseWeekService } from "../../../../../api";
+import { caseWeekKeys } from "./case-week.keys.query.ts";
 
-export const todosDeleteQuery = {
+export const caseWeekDeleteQuery = {
   DELETE: () => ({
     mutationFn: async ({ idProject, idTask }: any) => {
-      await todosService.deleteById(idProject, idTask);
+      await caseWeekService.deleteById(idProject, idTask);
     },
     // onMutate: (variables, context) => {
     // },
@@ -13,7 +13,7 @@ export const todosDeleteQuery = {
     onSuccess: (data, variables, onMutateResult, context) => {
       const queryClient = context.client;
       queryClient.invalidateQueries({
-        queryKey: [todosKeysQuery.getListTodos],
+        queryKey: [caseWeekKeys.getListCaseWeek],
       });
     },
     // onSettled: (data, error, variables, onMutateResult, context) => {

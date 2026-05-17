@@ -1,10 +1,10 @@
 import { caseYearTargetsKeys } from "./case-year-targets.keys.query";
-import { serviceCaseYearTargets } from "../../../../../../api/services";
+import { caseYearTargetsService } from "../../../../../../api/services";
 
 export const caseYearTargetsDeleteQuery = {
   DELETE: () => ({
     mutationFn: async ({ idProject, idTarget }: any) => {
-      await serviceCaseYearTargets.deleteById(idProject, idTarget);
+      await caseYearTargetsService.deleteById(idProject, idTarget);
     },
     // onMutate: (variables, context) => {
     // },

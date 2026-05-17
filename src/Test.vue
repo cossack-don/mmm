@@ -39,7 +39,7 @@
 <script setup>
 import { useInfiniteQuery } from "@tanstack/vue-query";
 import { computed } from "vue";
-import { serviceTodos } from "./api/index.js";
+import { todosService } from "./api/index.js";
 
 const { data, error, isLoading, fetchNextPage, isFetchingNextPage } =
   useInfiniteQuery({
@@ -47,7 +47,7 @@ const { data, error, isLoading, fetchNextPage, isFetchingNextPage } =
     queryFn: async ({ pageParam = 0 }) => {
       const params = { limit: 5, offset: pageParam * 5 };
 
-      const { data } = await serviceTodos.getList(
+      const { data } = await todosService.getList(
         3,
         params.limit,
         params.offset,

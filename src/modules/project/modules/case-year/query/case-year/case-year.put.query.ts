@@ -1,11 +1,10 @@
-import { caseYearController } from "../../controllers/case-year.controller.ts";
 import { caseYearTargetsKeys } from "./case-year.keys.query.ts";
-import { serviceCaseYear } from "../../../../../../api";
+import { caseYearService } from "../../../../../../api";
 
 export const caseYearPutQuery = {
   PUT: () => ({
     mutationFn: async ({ idProject, idTask, name }: any) => {
-      await serviceCaseYear.putById(idProject, idTask, name);
+      await caseYearService.putById(idProject, idTask, name);
     },
     // onMutate: (variables, context) => {
     // },

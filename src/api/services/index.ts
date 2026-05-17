@@ -1,13 +1,13 @@
-import { serviceProject } from "./service.project";
-import { serviceCaseYear } from "./service.case-year.ts";
-import { serviceCaseYearTargets } from "./service.case-year-targets.ts";
-import { serviceCaseWeek } from "./service.case-week.ts";
-import { serviceTodos } from "./service.todos.ts";
+import { projectService } from "./project.service.ts";
+import { caseYearService } from "./case-year.service.ts";
+import { caseYearTargetsService } from "./case-year-targets.service.ts";
+import { caseWeekService } from "./case-week.service.ts";
+import { todosService } from "./todos.service.ts";
 
 export {
-  serviceProject,
-  serviceCaseYear,
-  serviceCaseYearTargets,
-  serviceCaseWeek,
-  serviceTodos,
+  projectService,
+  caseYearService,
+  caseYearTargetsService,
+  caseWeekService,
+  todosService,
 };
