@@ -15,13 +15,12 @@ export const projectsGetQuery = {
     },
   }),
 
-  GET_LIST_INFINITY_SCROLL: (route: RouteLocationNormalized) => ({
+  GET_LIST_INFINITY_SCROLL: () => ({
     queryKey: [projectsKeys.getListProjectsInfinityScroll],
     queryFn: async ({ pageParam = 0 }) => {
       const params = { limit: 5, offset: pageParam * 5 };
 
       const { data } = await projectService.getList(
-        route.params.idProject as string,
         params.limit,
         params.offset,
       );

@@ -1,10 +1,14 @@
-import { API } from "@api/createAxios";
+import { API } from "@/api/createAxios";
 
 export const projectService = {
-  getList: () => {
+  getList: (limit: number = 10, offset: number = 0) => {
     return API({
       url: "/project",
       method: "GET",
+      params: {
+        limit: limit,
+        offset: offset,
+      },
     });
   },
   createProject: (name: string) => {

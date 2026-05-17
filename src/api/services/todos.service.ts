@@ -1,8 +1,7 @@
-import { API } from "@api/createAxios";
+import { API } from "@/api/createAxios";
 
 export const todosService = {
   getList: (idProject: any, limit = 10, offset = 0, total = null) => {
-    console.log(1);
     return API({
       url: `/project/${idProject}/todos`,
       params: {
