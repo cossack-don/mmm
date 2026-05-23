@@ -4,7 +4,18 @@ import vueDevTools from "vite-plugin-vue-devtools";
 import path from "path";
 
 export default defineConfig({
-  plugins: [vueDevTools(), vue()],
+  plugins: [
+    // DOCS - https://devtools.vuejs.org/
+    vueDevTools(
+      {
+        // Опциональные настройки
+        componentInspector: true,  // Включить инспектор компонентов
+        launchEditor: 'code',    // Редактор по умолчанию
+        openInEditorHost: 'http://localhost:5173', // Хост для открытия редактора
+      }
+    ),
+    vue()
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
