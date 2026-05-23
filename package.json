@@ -13,7 +13,7 @@
     "cy:run": "npx cypress open"
   },
   "dependencies": {
-    "@tanstack/vue-query": "^5.100.7",
+    "@tanstack/vue-query": "^5.100.13",
     "@tanstack/vue-query-devtools": "^6.1.26",
     "@vueuse/core": "^14.3.0",
     "axios": "^1.15.2",

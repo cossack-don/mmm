@@ -2,12 +2,10 @@
 // Создан: 5/17/2026, 8:14:00 PM
 // Операция: GET
 
-import { projectService } from "@api";
-import { projectsKeys } from "../query/projects.keys.query.ts";
-import type { RouteLocationNormalized } from "vue-router";
-import { delayFetch } from "@/utils";
-
-
+import { projectService } from '@api';
+import { projectsKeys } from '../query/projects.keys.query.ts';
+import type { RouteLocationNormalized } from 'vue-router';
+import { delayFetch, mappingInfinityQuery } from '@/utils';
 
 export const projectsGetQuery = {
   GET_LIST: () => ({
@@ -18,34 +16,23 @@ export const projectsGetQuery = {
     },
   }),
 
-  GET_LIST_INFINITY_SCROLL: () => ({
-    queryKey: [projectsKeys.getListProjectsInfinityScroll],
-    queryFn: async ({ pageParam = 0 }) => {
-      const params = { limit: 10, offset: pageParam * 10 };
+  GET_LIST_INFINITY_SCROLL: async ({ pageParam = 0 }) => {
+    // queryKey: [projectsKeys.getListProjectsInfinityScroll],
+    const params = { limit: 10, offset: pageParam * 10 };
 
-      await delayFetch(500)
-      
-      const { data } = await projectService.getList(
-        params.limit,
-        params.offset,
-      );
+    await delayFetch(500);
 
-      return {
-        data: data.data,
-        total: data.total,
-        limit: data.limit,
-        offset: data.offset,
-      };
-    },
-    getNextPageParam: (lastPage, allPages) => {
-      // Вычисляем, есть ли следующая страница
-      const loadedCount = allPages.length * lastPage.limit;
-      const hasMore = loadedCount < lastPage.total;
+    const { data } = await projectService.getList(params.limit, params.offset);
 
-      return hasMore ? allPages.length : undefined;
-    },
-    initialPageParam: 0,
-    staleTime: 5 * 60 * 1000, // 5 минут
-    refetchOnWindowFocus: false,
-  }),
+    const dataMapping = data?.data.map((item) => {
+      return { ...item, _isError: false, _isLoading: false, _isEditing: false };
+    });
+
+    return {
+      data: dataMapping,
+      total: data.total,
+      limit: data.limit,
+      offset: data.offset,
+    };
+  },
 };
