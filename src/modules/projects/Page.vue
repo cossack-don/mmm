@@ -16,6 +16,7 @@ import {
   projectsDeleteQuery,
   projectsGetQuery,
   projectsKeys,
+  projectsUpdateQuery,
 } from '@/modules/projects/query';
 import {
   deleteByIdInfinityQuery,
@@ -59,6 +60,7 @@ const nameProject = ref('');
 
 const { mutate: deleteByIdProject } = useMutation(projectsDeleteQuery.DELETE);
 const { mutate: createProject } = useMutation(projectsCreateQuery.POST);
+const { mutate: updateProject } = useMutation(projectsUpdateQuery.UPDATE);
 
 const onCreateProject = () => {
   if (!nameProject.value.trim()) return;
@@ -124,6 +126,28 @@ const onEditingCard = (id) => {
     (old: any) => updateFieldsInfinityQuery(old, id, { _isEditing: true })
   );
 };
+
+const onBLurChangeName = (id: number | string, event: Event) => {
+  const value = event.target.value;
+
+  updateProject(
+    { idProject: id, name: value },
+    {
+      onSuccess(data, variables, onMutateResult, context) {
+        console.log('onSuccess', data);
+
+        queryClient.setQueryData(
+          [projectsKeys.getListProjectsInfinityScroll],
+          (old: any) =>
+            updateFieldsInfinityQuery(old, id, {
+              _isEditing: false,
+              name: value,
+            })
+        );
+      },
+    }
+  );
+};
 </script>
 
 <template>
@@ -170,6 +194,11 @@ const onEditingCard = (id) => {
           >
             <v-card color="indigo">
               <v-card-text>
+                <v-text-field
+                  v-if="item._isEditing"
+                  v-model="nameProject"
+                  @blur="onBLurChangeName(item.id, $event)"
+                ></v-text-field>
                 <div>Проект - {{ item.name }}, ID - {{ item.id }},</div>
 
                 <div class="mb-4">_isLoading = {{ item._isLoading }}</div>
