@@ -2,7 +2,7 @@ export const routes = [
   {
     path: "/auth",
     name: "auth",
-    component: () => import("../modules/projects/PageProjects.vue"), // BasePage
+    component: () => import("../modules/projects/Page.vue"), // BasePage
     meta: {
       nameRu: null,
       layout: "AuthLayout",
@@ -13,7 +13,7 @@ export const routes = [
   {
     path: "/",
     name: "home",
-    component: () => import("../modules/projects/PageProjects.vue"), // BasePage
+    component: () => import("../modules/projects/Page.vue"), // BasePage
     meta: {
       nameRu: null,
       layout: "DefaultLayout",

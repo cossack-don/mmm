@@ -1,12 +1,8 @@
 <template>
-  <BaseHeader />
-
-  <main style="background-color: white" class="content">
-    <slot />
-  </main>
-
-  <BaseFooter />
+  <v-app> 
+    <v-app-bar app title="Application bar"></v-app-bar>
+      <v-main class="h-100">
+            <slot/>
+      </v-main>
+  </v-app>
 </template>
-<script setup lang="ts">
-import { BaseHeader, BaseFooter } from "./ui";
-</script>

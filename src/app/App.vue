@@ -4,14 +4,15 @@ import { LifeCycleApp, ErrorApp, DefaultApp } from "./ui";
 import { controllerApp } from "./controller.app";
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 import { isLayout } from "../layouts";
+
 const { checkHealthApp, isError, isLoading, isSuccess, statusError } =
   controllerApp();
 
 onMounted(() => checkHealthApp());
 
-onUpdated(() => {
-  console.warn("Layout re-rendered!");
-});
+// onUpdated(() => {
+//   // console.warn("Layout re-rendered!");
+// });
 </script>
 
 <template>

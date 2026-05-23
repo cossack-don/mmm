@@ -5,6 +5,9 @@
 import { projectService } from "@api";
 import { projectsKeys } from "../query/projects.keys.query.ts";
 import type { RouteLocationNormalized } from "vue-router";
+import { delayFetch } from "@/utils";
+
+
 
 export const projectsGetQuery = {
   GET_LIST: () => ({
@@ -18,8 +21,10 @@ export const projectsGetQuery = {
   GET_LIST_INFINITY_SCROLL: () => ({
     queryKey: [projectsKeys.getListProjectsInfinityScroll],
     queryFn: async ({ pageParam = 0 }) => {
-      const params = { limit: 5, offset: pageParam * 5 };
+      const params = { limit: 10, offset: pageParam * 10 };
 
+      await delayFetch(500)
+      
       const { data } = await projectService.getList(
         params.limit,
         params.offset,
