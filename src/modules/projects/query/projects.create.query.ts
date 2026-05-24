@@ -10,6 +10,7 @@ export const projectsCreateQuery = {
   POST: () => ({
     mutationFn: async ({ name }: { name: string }) => {
       await projectService.createProject(name);
+      return { name };
     },
     onSuccess: (
       _data: { name: string },

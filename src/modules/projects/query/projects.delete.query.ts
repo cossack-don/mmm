@@ -41,12 +41,14 @@ export const projectsDeleteQuery = {
       );
     },
     onSettled: (
-      { id }: { id: number },
+      data: { id: number } | undefined,
       _error: Error | null,
-      _variables: { id: number },
+      variables: { id: number },
       _onMutateResult: unknown,
       { client }: { client: QueryClient }
     ) => {
+      const id = data?.id ?? variables.id;
+
       client.setQueryData([projectsKeys.getListProjectsInfinityScroll], (old) =>
         updateFieldsInfinityQuery(old, id, { _isLoading: false })
       );

@@ -21,11 +21,14 @@ export const projectsUpdateQuery = {
       return { id: idProject, name: name };
     },
     onSuccess: (
-      { id, name }: { id: number; name: string },
-      _variables: { id: number; name: string },
+      data: { id: number; name: string },
+      variables: { idProject: number; name: string },
       _onMutateResult: unknown,
       { client }: { client: QueryClient }
     ) => {
+      const id = data.id ?? variables.idProject;
+      const name = data.name ?? variables.name;
+
       client.setQueryData([projectsKeys.getListProjectsInfinityScroll], (old) =>
         updateFieldsInfinityQuery(old, id, {
           _isEditing: false,
