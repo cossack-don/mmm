@@ -6,34 +6,31 @@ import { projectService } from '@/api';
 import { projectsKeys } from './projects.keys.query';
 import { updateFieldsInfinityQuery } from '@/utils/query';
 import type { QueryClient } from '@tanstack/vue-query';
+import type { IProjectsData } from '@/modules/projects/types';
 
 export const projectsUpdateQuery = {
   UPDATE: () => ({
-    mutationFn: async ({
-      idProject,
-      name,
-    }: {
-      idProject: number;
-      name: string;
-    }) => {
-      await projectService.updateById(idProject, name);
+    mutationFn: async ({ id, name }: { id: number; name: string }) => {
+      await projectService.updateById(id, name);
 
-      return { id: idProject, name: name };
+      return { id: id, name: name };
     },
     onSuccess: (
       data: { id: number; name: string },
-      variables: { idProject: number; name: string },
+      variables: { id: number; name: string },
       _onMutateResult: unknown,
       { client }: { client: QueryClient }
     ) => {
-      const id = data.id ?? variables.idProject;
+      const id = data.id ?? variables.id;
       const name = data.name ?? variables.name;
 
-      client.setQueryData([projectsKeys.getListProjectsInfinityScroll], (old) =>
-        updateFieldsInfinityQuery(old, id, {
-          _isEditing: false,
-          name: name,
-        })
+      client.setQueryData(
+        [projectsKeys.getListProjectsInfinityScroll],
+        (old: IProjectsData) =>
+          updateFieldsInfinityQuery(old, id, {
+            _isEditing: false,
+            name: name,
+          })
       );
     },
   }),

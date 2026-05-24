@@ -10,7 +10,7 @@ import {
 
 import { Button } from '@components-ui';
 import { useInfiniteScroll } from '@vueuse/core';
-
+import type { IProjectsData } from '@/modules/projects/types';
 import {
   projectsCreateQuery,
   projectsDeleteQuery,
@@ -66,13 +66,7 @@ const onCreateProject = () => {
 
 const queryClient = useQueryClient();
 
-const onDeleteByIdProject = (id: number | string) => {
-  queryClient.setQueryData(
-    [projectsKeys.getListProjectsInfinityScroll],
-    (old: any) =>
-      updateFieldsInfinityQuery(old, id, { _isLoading: true, _isError: false })
-  );
-
+const onDeleteByIdProject = (id: number) => {
   deleteByIdProject({ id: id });
 };
 
@@ -86,19 +80,18 @@ useInfiniteScroll(
   { distance: 150 }
 );
 
-const onEditingCard = (id, name) => {
+const onEditingCard = (id: number, name: string) => {
   console.log(name);
   // nameProject.value = name;
   queryClient.setQueryData(
     [projectsKeys.getListProjectsInfinityScroll],
-    (old: any) => updateFieldsInfinityQuery(old, id, { _isEditing: true })
+    (old: IProjectsData) =>
+      updateFieldsInfinityQuery(old, id, { _isEditing: true })
   );
 };
 
-const onBLurChangeName = (id: number | string, event: Event) => {
-  const value = event.target.value;
-
-  updateProject({ idProject: id, name: value });
+const onBLurChangeName = (id: number, event: Event) => {
+  updateProject({ id: id, name: (event.target as HTMLInputElement).value });
 };
 </script>
 
