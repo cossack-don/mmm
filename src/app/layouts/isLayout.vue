@@ -5,17 +5,17 @@
 </template>
 
 <script setup>
-import { computed, defineAsyncComponent, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { computed, defineAsyncComponent, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 
 const DefaultLayout = defineAsyncComponent(
-  () => import("../layouts/DefaultLayout.vue"),
+  () => import('../layouts/DefaultLayout.vue')
 );
 const AuthLayout = defineAsyncComponent(
-  () => import("../layouts/AuthLayout.vue"),
+  () => import('../layouts/AuthLayout.vue')
 );
 const NavigationLayout = defineAsyncComponent(
-  () => import("../layouts/NavigationLayout.vue"),
+  () => import('../layouts/ProjectLayout.vue')
 );
 
 const route = useRoute();
@@ -27,7 +27,7 @@ const layouts = {
 };
 
 const layout = computed(() => {
-  const layoutName = route.meta.layout || "DefaultLayout";
+  const layoutName = route.meta.layout || 'DefaultLayout';
   return layouts[layoutName];
 });
 </script>

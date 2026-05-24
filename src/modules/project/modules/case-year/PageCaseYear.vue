@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { Modal, Card, Button, DropDown } from "@components-ui";
-import { LifeCyclePage } from "@components-pages";
-import { useRoute } from "vue-router";
-import { useQuery, useMutation } from "@tanstack/vue-query";
+import { computed, ref } from 'vue';
+import { Modal, Card, Button, DropDown } from '@components-ui';
+import { LifeCyclePage, Page } from '@components-pages';
+import { useRoute } from 'vue-router';
+import { useQuery, useMutation } from '@tanstack/vue-query';
 import {
   caseYearDeleteQuery,
   caseYearPostQuery,
   caseYearPutQuery,
   caseYearGetQuery,
-} from "@project/case-year/query/case-year";
-import { listMonths, Q } from "./static.ts";
+} from '@project/case-year/query/case-year';
+import { listMonths, Q } from './static.ts';
 import {
   caseYearTargetsDeleteQuery,
   caseYearTargetsGetQuery,
   caseYearTargetsPostQuery,
   caseYearTargetsPutQuery,
-} from "@project/case-year/query/case-year-targets";
-import { chainRequestsQuery } from "./query/chain-requests.query.ts";
+} from '@project/case-year/query/case-year-targets';
+import { chainRequestsQuery } from './query/chain-requests.query.ts';
 
 const route = useRoute();
 
@@ -60,10 +60,10 @@ const START_COUNT_PILLING = ref(0);
 // ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ======
 // TODO CRUD list case year
 const { data: listCaseYear, isPending: isLoadingCaseYear } = useQuery(
-  caseYearGetQuery.GET_LIST(route),
+  caseYearGetQuery.GET_LIST(route)
 );
 const { mutate: deleteByIdCaseYearTask } = useMutation(
-  caseYearDeleteQuery.DELETE(),
+  caseYearDeleteQuery.DELETE()
 );
 const { mutate: putByIdCaseYearTask } = useMutation(caseYearPutQuery.PUT());
 const { mutate: createCaseYearTask } = useMutation(caseYearPostQuery.POST());
@@ -75,22 +75,22 @@ const { data: listCaseYearTargets, isPending: isLoadingCaseYearTargets } =
   useQuery(caseYearTargetsGetQuery.GET_LIST(route));
 
 const { mutate: deleteByIdCaseYearTarget } = useMutation(
-  caseYearTargetsDeleteQuery.DELETE(),
+  caseYearTargetsDeleteQuery.DELETE()
 );
 
 const { mutate: putByIdCaseYearTarget } = useMutation(
-  caseYearTargetsPutQuery.PUT(),
+  caseYearTargetsPutQuery.PUT()
 );
 
 const { mutate: createCaseYearTarget } = useMutation(
-  caseYearTargetsPostQuery.POST(),
+  caseYearTargetsPostQuery.POST()
 );
 
 const getMonthData = (quarterIndex: number, month: number) => {
   return computed(() => {
     return (
       listCaseYear.value?.[quarterIndex]?.filter(
-        (item: any) => item.month === month,
+        (item: any) => item.month === month
       ) || []
     );
   });
@@ -117,7 +117,9 @@ const openModal = () => (isModalOpen.value = true);
 
 const isModalOpenTwo = ref(false);
 const openModalTwo = (id: any, nameTask: any) => {
-  isModalOpenTwo.value = true;
+  stateTargetYearModal.value = true;
+
+  // isModalOpenTwo.value = true;
   idEditElement.value = id;
   stateModalName.value = nameTask;
 };
@@ -150,10 +152,10 @@ const handleConfirmFour = () => {
     idProject: route.params.idProject,
     idTarget: idEditElement.value,
     name: stateModalName.value,
-  } as any);
+  });
 };
 
-const stateModalName = ref("");
+const stateModalName = ref('');
 
 const optionsQ = ref<any>(Q);
 const pickedQ = ref(Q[0].id);
@@ -169,24 +171,24 @@ const handleConfirm = async () => {
     month: pickedMonth.value,
   });
 
-  stateModalName.value = "";
+  stateModalName.value = '';
 };
 
 const currentListMonths = computed(() => {
   if (pickedQ.value === 1) {
-    const res = optionsMonth.value.filter((item: any) => item.keyQ === "Q1");
+    const res = optionsMonth.value.filter((item: any) => item.keyQ === 'Q1');
     pickedMonth.value = res[0].id;
     return res;
   } else if (pickedQ.value === 2) {
-    const res = optionsMonth.value.filter((item: any) => item.keyQ === "Q2");
+    const res = optionsMonth.value.filter((item: any) => item.keyQ === 'Q2');
     pickedMonth.value = res[0].id;
     return res;
   } else if (pickedQ.value === 3) {
-    const res = optionsMonth.value.filter((item: any) => item.keyQ === "Q3");
+    const res = optionsMonth.value.filter((item: any) => item.keyQ === 'Q3');
     pickedMonth.value = res[0].id;
     return res;
   } else if (pickedQ.value === 4) {
-    const res = optionsMonth.value.filter((item: any) => item.keyQ === "Q4");
+    const res = optionsMonth.value.filter((item: any) => item.keyQ === 'Q4');
     pickedMonth.value = res[0].id;
     return res;
   }
@@ -217,9 +219,101 @@ const onPickedOptionsTask = async (id: any, idTask: any, name: any) => {
 const changePickMonth = (event: any) => {
   pickedMonth.value = event.target.value;
 };
+
+///refactoring v2
+const onDeleteByIdTargetYear = (id: number) => {
+  deleteByIdCaseYearTarget({
+    idProject: route.params.idProject,
+    idTarget: id,
+  });
+};
+
+const stateTargetYearModal = ref(false);
+const updateStateTargetYearModal = (v: boolean) =>
+  (stateTargetYearModal.value = v);
+const stateNameTargetYear = ref(false);
+
+const onShowModalEdit = (id: any, nameTask: any) => {
+  updateStateTargetYearModal(true);
+
+  idEditElement.value = id;
+  stateNameTargetYear.value = nameTask;
+};
+
+const onSaveNameTargetYear = () => {
+  putByIdCaseYearTarget({
+    idProject: route.params.idProject,
+    idTarget: idEditElement.value,
+    name: stateNameTargetYear.value,
+  });
+
+  updateStateTargetYearModal(false);
+};
 </script>
 
 <template>
+  <Page :isLoading="false" :isError="false" :isEmptyContent="false">
+    <template #pageError> error content </template>
+
+    <template #headerContent>
+      <v-container fluid>
+        <v-row>
+          <v-col cols="12" sm="12" md="12">
+            <v-card title="Дела на год - 2026">
+              <v-btn @click="openModalThree"> Создание цели </v-btn>
+
+              <v-chip
+                v-for="item in listCaseYearTargets"
+                :key="item.id"
+                closable
+                color="primary"
+                size="small"
+                @click="onShowModalEdit(item.id, item.name)"
+                @click:close="onDeleteByIdTargetYear(item.id)"
+              >
+                {{ item.name }}
+              </v-chip>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </template>
+
+    <template #notEmptyBodyContent>
+      <v-container fluid>
+        <v-row>
+          <v-col cols="12" sm="12" md="12"> BODY CONTENT </v-col>
+
+          <!-- Само модальное окно -->
+        </v-row>
+      </v-container>
+    </template>
+  </Page>
+
+  <v-dialog v-model="stateTargetYearModal" max-width="500">
+    <v-card>
+      <v-card-title class="text-h5">Заголовок модального окна</v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-model="stateNameTargetYear"
+          label="First name"
+        ></v-text-field>
+
+        <v-btn @click="onSaveNameTargetYear">Сохранить</v-btn>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          color="blue-darken-1"
+          variant="text"
+          @click="updateStateTargetYearModal(false)"
+        >
+          Закрыть
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
   <LifeCyclePage
     :isLoading="isLoadingCaseYearTargets || isLoadingCaseYear"
     :isError="false"
@@ -293,31 +387,6 @@ const changePickMonth = (event: any) => {
           <p>Название цели</p>
           <input v-model="stateModalName" placeholder="Название цели" />
         </Modal>
-
-        <Card style="margin-bottom: 40px" :styles="{ width: '100%' }">
-          <template #default>
-            <h4>Дела на год 2026</h4>
-
-            <Button @click="openModalThree">Создание цели</Button>
-
-            <div style="display: flex; flex-wrap: wrap">
-              <Card
-                style="margin: 10px; display: flex; align-items: center"
-                v-for="item in listCaseYearTargets"
-                :key="item.id"
-              >
-                <template #default>
-                  <p>{{ item.name }}</p>
-                  <DropDown
-                    @onClick="
-                      ({ id }) => onPickedOptionsTargets(id, item.id, item.name)
-                    "
-                  />
-                </template>
-              </Card>
-            </div>
-          </template>
-        </Card>
 
         <h4>Планы на 4-е квартала</h4>
 

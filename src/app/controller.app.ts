@@ -1,5 +1,5 @@
-import { useStatusesLifeCycle } from "@composables";
-import { checkHealthService } from "@api";
+import { useStatusesLifeCycle } from '@composables';
+import { checkHealthService } from '@api';
 
 export const controllerApp = () => {
   const {
@@ -13,21 +13,21 @@ export const controllerApp = () => {
 
   const checkHealthApp = async () => {
     try {
-      setStatusLifeCycle("isSuccess", false);
-      setStatusLifeCycle("isError", false);
-      setStatusLifeCycle("isLoading", true);
+      setStatusLifeCycle('isSuccess', false);
+      setStatusLifeCycle('isError', false);
+      setStatusLifeCycle('isLoading', true);
 
       const { data } = await checkHealthService.status();
 
       if (data) {
-        setStatusLifeCycle("isSuccess", true);
+        setStatusLifeCycle('isSuccess', true);
       }
     } catch (error: any) {
       setStatusError(error.status);
-      setStatusLifeCycle("isError", true);
-      setStatusLifeCycle("isSuccess", false);
+      setStatusLifeCycle('isError', true);
+      setStatusLifeCycle('isSuccess', false);
     } finally {
-      setStatusLifeCycle("isLoading", false);
+      setStatusLifeCycle('isLoading', false);
     }
   };
 
