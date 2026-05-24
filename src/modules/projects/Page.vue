@@ -18,11 +18,7 @@ import {
   projectsKeys,
   projectsUpdateQuery,
 } from '@/modules/projects/query';
-import {
-  deleteByIdInfinityQuery,
-  mappingInfinityQuery,
-  updateFieldsInfinityQuery,
-} from '@/utils';
+import { updateFieldsInfinityQuery } from '@/utils/query';
 
 const {
   data,
@@ -77,50 +73,22 @@ const onDeleteByIdProject = (id: number | string) => {
       updateFieldsInfinityQuery(old, id, { _isLoading: true, _isError: false })
   );
 
-  deleteByIdProject(
-    { id: id },
-    {
-      onError(error, variables, onMutateResult, context) {
-        console.log('onError');
-
-        queryClient.setQueryData(
-          [projectsKeys.getListProjectsInfinityScroll],
-          (old: any) => updateFieldsInfinityQuery(old, id, { _isError: true })
-        );
-      },
-      onSuccess(data, variables, onMutateResult, context) {
-        console.log('onSuccess', data);
-
-        queryClient.setQueryData(
-          [projectsKeys.getListProjectsInfinityScroll],
-          (old: any) => deleteByIdInfinityQuery(old, id)
-        );
-      },
-      onSettled(data, error, variables, onMutateResult, context) {
-        queryClient.setQueryData(
-          [projectsKeys.getListProjectsInfinityScroll],
-          (old: any) =>
-            updateFieldsInfinityQuery(old, id, { _isLoading: false })
-        );
-      },
-    }
-  );
-  // console.log(data.value, 33);
+  deleteByIdProject({ id: id });
 };
 
-// Настройка бесконечного скролла
 useInfiniteScroll(
-  window, // Используем контейнер, а не window
+  window,
   () => {
-    // Загружаем следующую страницу, если есть данные и не идет загрузка
     if (hasNextPage.value && !isFetchingNextPage.value && !isLoading.value) {
       fetchNextPage();
     }
   },
-  { distance: 100 } // Загружаем за 200px до конца
+  { distance: 150 }
 );
 
-const onEditingCard = (id) => {
+const onEditingCard = (id, name) => {
+  console.log(name);
+  // nameProject.value = name;
   queryClient.setQueryData(
     [projectsKeys.getListProjectsInfinityScroll],
     (old: any) => updateFieldsInfinityQuery(old, id, { _isEditing: true })
@@ -130,23 +98,7 @@ const onEditingCard = (id) => {
 const onBLurChangeName = (id: number | string, event: Event) => {
   const value = event.target.value;
 
-  updateProject(
-    { idProject: id, name: value },
-    {
-      onSuccess(data, variables, onMutateResult, context) {
-        console.log('onSuccess', data);
-
-        queryClient.setQueryData(
-          [projectsKeys.getListProjectsInfinityScroll],
-          (old: any) =>
-            updateFieldsInfinityQuery(old, id, {
-              _isEditing: false,
-              name: value,
-            })
-        );
-      },
-    }
-  );
+  updateProject({ idProject: id, name: value });
 };
 </script>
 
@@ -173,12 +125,6 @@ const onBLurChangeName = (id: number | string, event: Event) => {
             <Button @click="onCreateProject">Создать проект</Button>
           </v-col>
         </v-row>
-
-        <v-progress-circular
-          v-if="isFetchingNextPage"
-          color="green"
-          indeterminate
-        />
       </v-container>
     </template>
 
@@ -218,7 +164,7 @@ const onBLurChangeName = (id: number | string, event: Event) => {
                   >Удалить</v-btn
                 >
                 <v-btn
-                  @click="onEditingCard(item.id)"
+                  @click="onEditingCard(item.id, item.name)"
                   color="green"
                   variant="flat"
                   :loading="false"
@@ -230,15 +176,12 @@ const onBLurChangeName = (id: number | string, event: Event) => {
         </v-row>
 
         <v-progress-circular
+          style="display: flex; margin: 0 auto; margin-top: 35px"
           v-if="isFetchingNextPage"
           color="green"
           indeterminate
         />
       </v-container>
-    </template>
-
-    <template #emptyBodyContent>
-      <div>empty content</div>
     </template>
   </Page>
 </template>

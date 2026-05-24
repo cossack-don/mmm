@@ -1,12 +1,4 @@
-// export const updateFieldsInfinityQuery = (array, id, updates) => {
-//   for (const page of array.pages) {
-//     for (const item of page.data) {
-//       if (item.id === id) Object.assign(item, updates);
-//     }
-//   }
-// };
-
-export const updateFieldsInfinityQuery = (oldArray, id, updates) => {
+export const updateFieldsInfinityQuery = (oldArray, id, customFields) => {
   if (!oldArray) return oldArray;
 
   return {
@@ -14,11 +6,13 @@ export const updateFieldsInfinityQuery = (oldArray, id, updates) => {
 
     pages: oldArray.pages.map((page) => ({
       ...page,
-      data: page.data.map((project) =>
-        project.id === id
-          ? { ...project, ...updates } // добавляем кастомное поле
-          : project
-      ),
+      data: page.data.map((item) => {
+        if (item.id === id) {
+          return { ...item, ...customFields };
+        } else {
+          return item;
+        }
+      }),
     })),
   };
 };

@@ -4,8 +4,8 @@
 
 import { projectService } from '@api';
 import { projectsKeys } from '../query/projects.keys.query.ts';
-import type { RouteLocationNormalized } from 'vue-router';
-import { delayFetch, mappingInfinityQuery } from '@/utils';
+import { delayFetch } from '@/utils';
+import { mappingDataInfinityQuery } from '@/utils/query';
 
 export const projectsGetQuery = {
   GET_LIST: () => ({
@@ -17,19 +17,18 @@ export const projectsGetQuery = {
   }),
 
   GET_LIST_INFINITY_SCROLL: async ({ pageParam = 0 }) => {
-    // queryKey: [projectsKeys.getListProjectsInfinityScroll],
     const params = { limit: 10, offset: pageParam * 10 };
 
     await delayFetch(500);
 
     const { data } = await projectService.getList(params.limit, params.offset);
 
-    const dataMapping = data?.data.map((item) => {
-      return { ...item, _isError: false, _isLoading: false, _isEditing: false };
-    });
-
     return {
-      data: dataMapping,
+      data: mappingDataInfinityQuery(data.data, {
+        _isError: false,
+        _isLoading: false,
+        _isEditing: false,
+      }),
       total: data.total,
       limit: data.limit,
       offset: data.offset,

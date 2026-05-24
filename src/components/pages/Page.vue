@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import Spinner from '../ui/Spinner.vue';
-
 interface IProps {
   isLoading?: boolean;
   isError?: boolean;
@@ -15,7 +13,12 @@ const props = withDefaults(defineProps<IProps>(), {
 </script>
 
 <template>
-  <Spinner v-if="props.isLoading" />
+  <v-progress-circular
+    style="display: flex; margin: 0 auto; height: calc(100vh - 64px)"
+    v-if="props.isLoading"
+    color="green"
+    indeterminate
+  />
 
   <template v-else-if="props.isError">
     <slot name="pageError" />
@@ -26,11 +29,23 @@ const props = withDefaults(defineProps<IProps>(), {
       <slot name="headerContent"></slot>
 
       <template v-if="props.isEmptyContent">
-        <slot name="emptyBodyContent"></slot>
+        <slot name="emptyBodyContent">
+          <v-empty-state
+            title="Проектов нет"
+            text="Создайте пожалуйста проект"
+            image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+          ></v-empty-state>
+        </slot>
       </template>
 
       <template v-else>
-        <slot name="notEmptyBodyContent"></slot>
+        <slot name="notEmptyBodyContent">
+          <v-empty-state
+            title="Что-то пошло не так с API"
+            text="The page you were looking for does not exist"
+            image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
+          ></v-empty-state>
+        </slot>
       </template>
     </slot>
   </template>
