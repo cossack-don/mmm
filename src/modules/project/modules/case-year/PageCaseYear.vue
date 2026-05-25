@@ -249,6 +249,26 @@ const onSaveNameTargetYear = () => {
 
   updateStateTargetYearModal(false);
 };
+
+const showMenu = ref(false);
+const menuTarget = ref(null);
+
+const menuItems = [
+  { title: 'Create', prependIcon: 'mdi-plus-circle', code: 'add' },
+  { type: 'divider' },
+  { title: 'Modify', prependIcon: 'mdi-pencil', code: 'edit' },
+  { type: 'divider' },
+  { title: 'Remove', prependIcon: 'mdi-trash-can', code: 'delete' },
+];
+
+async function show(evt) {
+  if (showMenu.value) {
+    showMenu.value = false;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  menuTarget.value = evt.target.closest('.v-icon-btn');
+  showMenu.value = true;
+}
 </script>
 
 <template>
@@ -313,6 +333,36 @@ const onSaveNameTargetYear = () => {
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <v-menu
+    v-model="showMenu"
+    :offset="[-8, -12]"
+    :target="menuTarget"
+    location="bottom end"
+    scroll-strategy="close"
+  >
+    <template v-slot:activator="{ props }">
+      <v-btn
+        v-bind="props"
+        icon="mdi-dots-vertical"
+        size="small"
+        variant="outlined"
+        @click="show"
+      ></v-btn>
+    </template>
+    <v-list
+      :items="menuItems"
+      class="py-0"
+      density="compact"
+      item-value="code"
+      item-props
+      slim
+    >
+      <template v-slot:prepend>
+        <v-icon class="mr-n2" size="small"></v-icon>
+      </template>
+    </v-list>
+  </v-menu>
 
   <LifeCyclePage
     :isLoading="isLoadingCaseYearTargets || isLoadingCaseYear"
