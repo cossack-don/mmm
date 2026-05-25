@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Page } from '@/components/pages';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useInfiniteQuery } from '@tanstack/vue-query';
 import { useInfiniteScroll } from '@vueuse/core';
 import { projectsGetQuery, projectsKeys } from '@/modules/projects/query';
@@ -47,6 +47,23 @@ useInfiniteScroll(
   },
   { distance: 150 }
 );
+
+const localProjects = ref<any[]>([]);
+
+watch(
+  allProjects,
+  (newProjects) => {
+    console.log('Получены новые проекты с сервера:', newProjects.length);
+
+    // Вариант 1: Полная замена
+    localProjects.value = [...newProjects];
+  },
+  { immediate: true, deep: false } // immediate - запустить сразу при монтировании
+);
+
+const onDelete = ({ id }) => {
+  localProjects.value = localProjects.value.filter((item) => item.id !== id);
+};
 </script>
 
 <template>
@@ -77,7 +94,7 @@ useInfiniteScroll(
             sm="6"
             md="4"
           >
-            <Card :item="item" />
+            <Card @onDelete="onDelete" :item="item" />
           </v-col>
         </v-row>
 

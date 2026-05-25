@@ -43,10 +43,10 @@ export const projectsDeleteQuery = {
       _onMutateResult: unknown,
       { client }: { client: QueryClient }
     ) => {
-      // client.setQueryData(
-      //   [projectsKeys.getListProjectsInfinityScroll],
-      //   (old: IProjectsData) => deleteByIdInfinityQuery(old, id)
-      // );
+      client.setQueryData(
+        [projectsKeys.getListProjectsInfinityScroll],
+        (old: IProjectsData) => deleteByIdInfinityQuery(old, id)
+      );
     },
 
     onError: (

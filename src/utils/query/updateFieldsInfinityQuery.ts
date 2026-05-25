@@ -1,18 +1,18 @@
 export const updateFieldsInfinityQuery = (
-  oldArray,
+  oldArray: any,
   id: number,
-  customFields
+  fields: any
 ) => {
   if (!oldArray) return oldArray;
 
   return {
     ...oldArray,
 
-    pages: oldArray.pages.map((page) => ({
+    pages: oldArray.pages.map((page: any) => ({
       ...page,
-      data: page.data.map((item) => {
+      data: page.data.map((item: any) => {
         if (item.id === id) {
-          return { ...item, ...customFields };
+          return { ...item, ...fields };
         } else {
           return item;
         }

@@ -5,7 +5,6 @@
 import { projectService } from '@api';
 import { projectsKeys } from '../query/projects.keys.query.ts';
 import { delayFetch } from '@/utils';
-import { mappingDataInfinityQuery } from '@/utils/query';
 
 export const projectsGetQuery = {
   GET_LIST: () => ({
@@ -24,11 +23,7 @@ export const projectsGetQuery = {
     const { data } = await projectService.getList(params.limit, params.offset);
 
     return {
-      data: mappingDataInfinityQuery(data.data, {
-        _isError: false,
-        _isLoading: false,
-        _isEditing: false,
-      }),
+      data: data.data,
       total: data.total,
       limit: data.limit,
       offset: data.offset,

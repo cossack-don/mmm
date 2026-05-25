@@ -6,6 +6,7 @@ import { projectsDeleteQuery, projectsUpdateQuery } from '../query';
 const props = defineProps<{
   item: any;
 }>();
+const emit = defineEmits(['onDelete']);
 
 const {
   isPending: isPendingDelete,
@@ -14,7 +15,14 @@ const {
 } = useMutation(projectsDeleteQuery.DELETE);
 
 const onDeleteByIdProject = (id: number) => {
-  deleteByIdProject({ id: id });
+  deleteByIdProject(
+    { id: id }
+    // {
+    //   onSuccess() {
+    //     emit('onDelete', { id });
+    //   },
+    // }
+  );
 };
 
 const isEditing = ref(false);
