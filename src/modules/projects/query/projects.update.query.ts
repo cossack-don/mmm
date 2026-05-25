@@ -7,10 +7,12 @@ import { projectsKeys } from './projects.keys.query';
 import { updateFieldsInfinityQuery } from '@/utils/query';
 import type { QueryClient } from '@tanstack/vue-query';
 import type { IProjectsData } from '@/modules/projects/types';
+import { delayFetch } from '@/utils';
 
 export const projectsUpdateQuery = {
   UPDATE: () => ({
     mutationFn: async ({ id, name }: { id: number; name: string }) => {
+      await delayFetch(3000);
       await projectService.updateById(id, name);
 
       return { id: id, name: name };
@@ -26,11 +28,7 @@ export const projectsUpdateQuery = {
 
       client.setQueryData(
         [projectsKeys.getListProjectsInfinityScroll],
-        (old: IProjectsData) =>
-          updateFieldsInfinityQuery(old, id, {
-            _isEditing: false,
-            name: name,
-          })
+        (old: IProjectsData) => updateFieldsInfinityQuery(old, id, { name })
       );
     },
   }),

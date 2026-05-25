@@ -1,4 +1,8 @@
-export const updateFieldsInfinityQuery = (oldArray, id, customFields) => {
+export const updateFieldsInfinityQuery = (
+  oldArray,
+  id: number,
+  customFields
+) => {
   if (!oldArray) return oldArray;
 
   return {

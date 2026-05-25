@@ -1,24 +1,10 @@
 <script setup lang="ts">
 import { Page } from '@/components/pages';
-
-import { computed, ref } from 'vue';
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/vue-query';
-
-import { Button } from '@components-ui';
+import { computed } from 'vue';
+import { useInfiniteQuery } from '@tanstack/vue-query';
 import { useInfiniteScroll } from '@vueuse/core';
-import type { IProjectsData } from '@/modules/projects/types';
-import {
-  projectsCreateQuery,
-  projectsDeleteQuery,
-  projectsGetQuery,
-  projectsKeys,
-  projectsUpdateQuery,
-} from '@/modules/projects/query';
-import { updateFieldsInfinityQuery } from '@/utils/query';
+import { projectsGetQuery, projectsKeys } from '@/modules/projects/query';
+import { Card, Header } from './ui';
 
 const {
   data,
@@ -52,24 +38,6 @@ const totalProjects = computed(() => {
   return data.value.pages[0]?.total || 0;
 });
 
-const nameProject = ref('');
-
-const { mutate: deleteByIdProject } = useMutation(projectsDeleteQuery.DELETE);
-const { mutate: createProject } = useMutation(projectsCreateQuery.POST);
-const { mutate: updateProject } = useMutation(projectsUpdateQuery.UPDATE);
-
-const onCreateProject = () => {
-  if (!nameProject.value.trim()) return;
-  createProject({ name: nameProject.value });
-  nameProject.value = '';
-};
-
-const queryClient = useQueryClient();
-
-const onDeleteByIdProject = (id: number) => {
-  deleteByIdProject({ id: id });
-};
-
 useInfiniteScroll(
   window,
   () => {
@@ -79,20 +47,6 @@ useInfiniteScroll(
   },
   { distance: 150 }
 );
-
-const onEditingCard = (id: number, name: string) => {
-  console.log(name);
-  // nameProject.value = name;
-  queryClient.setQueryData(
-    [projectsKeys.getListProjectsInfinityScroll],
-    (old: IProjectsData) =>
-      updateFieldsInfinityQuery(old, id, { _isEditing: true })
-  );
-};
-
-const onBLurChangeName = (id: number, event: Event) => {
-  updateProject({ id: id, name: (event.target as HTMLInputElement).value });
-};
 </script>
 
 <template>
@@ -107,15 +61,7 @@ const onBLurChangeName = (id: number, event: Event) => {
       <v-container>
         <v-row>
           <v-col cols="12" sm="6" md="4">
-            Проекты - показано: {{ allProjects.length }} из
-            {{ totalProjects }} проектов
-
-            <input
-              v-model="nameProject"
-              placeholder="Название проекта"
-              @keyup.enter="onCreateProject"
-            />
-            <Button @click="onCreateProject">Создать проект</Button>
+            <Header :projects="allProjects" :totalProjects="totalProjects" />
           </v-col>
         </v-row>
       </v-container>
@@ -131,40 +77,7 @@ const onBLurChangeName = (id: number, event: Event) => {
             sm="6"
             md="4"
           >
-            <v-card color="indigo">
-              <v-card-text>
-                <v-text-field
-                  v-if="item._isEditing"
-                  v-model="nameProject"
-                  @blur="onBLurChangeName(item.id, $event)"
-                ></v-text-field>
-                <div>Проект - {{ item.name }}, ID - {{ item.id }},</div>
-
-                <div class="mb-4">_isLoading = {{ item._isLoading }}</div>
-                <div class="mb-4">_isError = {{ item._isError }}</div>
-                <div class="mb-4">_isEditing = {{ item._isEditing }}</div>
-              </v-card-text>
-
-              <v-card-actions>
-                <v-btn :to="`/project/${item.id}`" color="blue" variant="flat"
-                  >Перейти</v-btn
-                >
-                <v-btn
-                  @click="onDeleteByIdProject(item.id)"
-                  color="red"
-                  variant="flat"
-                  :loading="item._isLoading"
-                  >Удалить</v-btn
-                >
-                <v-btn
-                  @click="onEditingCard(item.id, item.name)"
-                  color="green"
-                  variant="flat"
-                  :loading="false"
-                  >Редактировать</v-btn
-                >
-              </v-card-actions>
-            </v-card>
+            <Card :item="item" />
           </v-col>
         </v-row>
 

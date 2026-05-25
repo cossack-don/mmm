@@ -17,18 +17,17 @@ export const projectsDeleteQuery = {
       { id }: { id: number },
       { client }: { client: QueryClient }
     ) => {
-      await client.cancelQueries({
-        queryKey: [projectsKeys.getListProjectsInfinityScroll],
-      });
-
-      await client.setQueryData(
-        [projectsKeys.getListProjectsInfinityScroll],
-        (old: IProjectsData) =>
-          updateFieldsInfinityQuery(old, id, {
-            _isLoading: true,
-            _isError: false,
-          })
-      );
+      // await client.cancelQueries({
+      //   queryKey: [projectsKeys.getListProjectsInfinityScroll],
+      // });
+      // await client.setQueryData(
+      //   [projectsKeys.getListProjectsInfinityScroll],
+      //   (old: IProjectsData) =>
+      //     updateFieldsInfinityQuery(old, id, {
+      //       _isLoading: true,
+      //       _isError: false,
+      //     })
+      // );
     },
 
     mutationFn: async ({ id }: { id: number }) => {
@@ -44,13 +43,10 @@ export const projectsDeleteQuery = {
       _onMutateResult: unknown,
       { client }: { client: QueryClient }
     ) => {
-      client.setQueryData(
-        [projectsKeys.getListProjectsInfinityScroll],
-        (old: IProjectsData) => {
-          console.log(old, 'old');
-          deleteByIdInfinityQuery(old, id);
-        }
-      );
+      // client.setQueryData(
+      //   [projectsKeys.getListProjectsInfinityScroll],
+      //   (old: IProjectsData) => deleteByIdInfinityQuery(old, id)
+      // );
     },
 
     onError: (
@@ -59,14 +55,14 @@ export const projectsDeleteQuery = {
       _onMutateResult: unknown,
       { client }: { client: QueryClient }
     ) => {
-      client.setQueryData(
-        [projectsKeys.getListProjectsInfinityScroll],
-        (old: IProjectsData) =>
-          updateFieldsInfinityQuery(old, id, {
-            _isError: true,
-            _isLoading: false,
-          })
-      );
+      // client.setQueryData(
+      //   [projectsKeys.getListProjectsInfinityScroll],
+      //   (old: IProjectsData) =>
+      //     updateFieldsInfinityQuery(old, id, {
+      //       _isError: true,
+      //       _isLoading: false,
+      //     })
+      // );
     },
 
     onSettled: (
@@ -76,13 +72,12 @@ export const projectsDeleteQuery = {
       _onMutateResult: unknown,
       { client }: { client: QueryClient }
     ) => {
-      const id = data?.id ?? variables.id;
-
-      client.setQueryData(
-        [projectsKeys.getListProjectsInfinityScroll],
-        (old: IProjectsData) =>
-          updateFieldsInfinityQuery(old, id, { _isLoading: false })
-      );
+      // const id = data?.id ?? variables.id;
+      // client.setQueryData(
+      //   [projectsKeys.getListProjectsInfinityScroll],
+      //   (old: IProjectsData) =>
+      //     updateFieldsInfinityQuery(old, id, { _isLoading: false })
+      // );
     },
   }),
 };
