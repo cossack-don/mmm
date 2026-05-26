@@ -53,17 +53,18 @@ const localProjects = ref<any[]>([]);
 watch(
   allProjects,
   (newProjects) => {
-    console.log('Получены новые проекты с сервера:', newProjects.length);
+    // console.log('Получены новые проекты с сервера:', newProjects.length);
 
     // Вариант 1: Полная замена
     localProjects.value = [...newProjects];
+    // console.log(localProjects.value, 'list');
   },
   { immediate: true, deep: false } // immediate - запустить сразу при монтировании
 );
 
-const onDelete = ({ id }) => {
-  localProjects.value = localProjects.value.filter((item) => item.id !== id);
-};
+// const onDelete = ({ id }) => {
+//   localProjects.value = localProjects.value.filter((item) => item.id !== id);
+// };
 </script>
 
 <template>
@@ -94,7 +95,7 @@ const onDelete = ({ id }) => {
             sm="6"
             md="4"
           >
-            <Card @onDelete="onDelete" :item="item" />
+            <Card :item="item" />
           </v-col>
         </v-row>
 

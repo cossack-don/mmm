@@ -16,7 +16,7 @@ export const projectsGetQuery = {
   }),
 
   GET_LIST_INFINITY_SCROLL: async ({ pageParam = 0 }) => {
-    const params = { limit: 10, offset: pageParam * 10 };
+    const params = { limit: 20, offset: pageParam * 20 };
 
     await delayFetch(500);
 
