@@ -249,6 +249,129 @@ const onSaveNameTargetYear = () => {
 
   updateStateTargetYearModal(false);
 };
+
+const listMock = [
+  {
+    id: 1,
+    name: 'Q1',
+    months: [
+      {
+        id: 1,
+        name: 'Январь',
+        tasks: [
+          { id: 1, name: 'Задача 1' },
+          { id: 2, name: 'Задача 2' },
+        ],
+      },
+      {
+        id: 2,
+        name: 'Февраль',
+        tasks: [
+          { id: 1, name: 'Задача 1' },
+          { id: 2, name: 'Задача 2' },
+        ],
+      },
+      {
+        id: 3,
+        name: 'Март',
+        tasks: [
+          { id: 1, name: 'Задача 1' },
+          { id: 2, name: 'Задача 2' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Q2',
+    months: [
+      {
+        id: 1,
+        name: 'Апрель',
+        tasks: [
+          { id: 1, name: 'Задача 1' },
+          { id: 2, name: 'Задача 2' },
+        ],
+      },
+      {
+        id: 2,
+        name: 'Май',
+        tasks: [
+          { id: 1, name: 'Задача 1' },
+          { id: 2, name: 'Задача 2' },
+        ],
+      },
+      {
+        id: 3,
+        name: 'Июнь',
+        tasks: [
+          { id: 1, name: 'Задача 1' },
+          { id: 2, name: 'Задача 2' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Q3',
+    months: [
+      {
+        id: 1,
+        name: 'Июль',
+        tasks: [
+          { id: 1, name: 'Задача 1' },
+          { id: 2, name: 'Задача 2' },
+        ],
+      },
+      {
+        id: 2,
+        name: 'Август',
+        tasks: [
+          { id: 1, name: 'Задача 1' },
+          { id: 2, name: 'Задача 2' },
+        ],
+      },
+      {
+        id: 3,
+        name: 'Сентябрь',
+        tasks: [
+          { id: 1, name: 'Задача 1' },
+          { id: 2, name: 'Задача 2' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 4,
+    name: 'Q4',
+    months: [
+      {
+        id: 1,
+        name: 'Октябрь',
+        tasks: [
+          { id: 1, name: 'Задача 1' },
+          { id: 2, name: 'Задача 2' },
+        ],
+      },
+      {
+        id: 2,
+        name: 'Ноябрь',
+        tasks: [
+          { id: 1, name: 'Задача 1' },
+          { id: 2, name: 'Задача 2' },
+        ],
+      },
+      {
+        id: 3,
+        name: 'Декабрь',
+        tasks: [
+          { id: 1, name: 'Задача 1' },
+          { id: 2, name: 'Задача 2' },
+        ],
+      },
+    ],
+  },
+];
 </script>
 
 <template>
@@ -282,9 +405,51 @@ const onSaveNameTargetYear = () => {
     <template #notEmptyBodyContent>
       <v-container fluid>
         <v-row>
-          <v-col cols="12" sm="12" md="12"> BODY CONTENT </v-col>
-
-          <!-- Само модальное окно -->
+          <v-col
+            cols="12"
+            sm="6"
+            md="4"
+            lg="3"
+            v-for="Q in listMock"
+            :key="Q.id"
+          >
+            <v-card :title="Q.name">
+              <v-card-text>
+                <v-container fluid>
+                  <v-row>
+                    <v-col cols="12" v-for="month in Q.months" :key="month.id">
+                      <v-card>
+                        <v-list lines="one" density="compact" class="pa-0">
+                          <v-list-item>
+                            <template v-slot:title>
+                              <span class="font-weight-bold">
+                                {{ month.name }}
+                              </span>
+                            </template>
+                          </v-list-item>
+                          <v-list-item
+                            v-for="task in month.tasks"
+                            :key="task.id"
+                            :subtitle="''"
+                          >
+                            <template v-slot:title>
+                              <span style="font-size: 0.75rem">
+                                {{ task.name }}
+                              </span>
+                              <ListOptions
+                                @onDelete="(v) => console.log('on-delete')"
+                                @onEdit="(v) => console.log('on-edit')"
+                              />
+                            </template>
+                          </v-list-item>
+                        </v-list>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+            </v-card>
+          </v-col>
         </v-row>
       </v-container>
     </template>
