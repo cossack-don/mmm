@@ -7,7 +7,9 @@ import DropDown from './DropDown.vue';
 import ErrorPage from '../pages/ErrorPage.vue';
 import LifeCyclePage from '../pages/LifeCyclePage.vue';
 import EmptyPage from '../pages/EmptyPage.vue';
-import ListOptions from './ListOptions.vue';
+import ReusableListOptions from './ReusableListOptions.vue';
+
+import ReusableModal from './ReusableModal.vue';
 
 export {
   Spinner,
@@ -18,5 +20,6 @@ export {
   LifeCyclePage,
   ErrorPage,
   EmptyPage,
-  ListOptions,
+  ReusableListOptions,
+  ReusableModal,
 };

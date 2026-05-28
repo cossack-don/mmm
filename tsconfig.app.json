@@ -8,9 +8,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-//      "@components-ui/*": ["./src/components/ui/*"],
+      //      "@components-ui/*": ["./src/components/ui/*"],
       "@api": ["./src/api/index.ts"],
-      "@project": ["./src/modules/project/modules"],
+      "@project/*": ["./src/modules/project/modules/*"],
 
       "@components-ui": ["./src/components/ui/index.ts"],
       "@components-pages": ["./src/components/pages/index.ts"],
@@ -23,13 +23,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true,
-
-
+    "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

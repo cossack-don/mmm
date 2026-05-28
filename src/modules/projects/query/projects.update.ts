@@ -3,7 +3,7 @@
 // Операция: UPDATE
 
 import { projectService } from '@/api';
-import { projectsKeys } from './projects.keys.query';
+import { projectsKeys } from './projects.keys';
 import { updateFieldsInfinityQuery } from '@/utils/query';
 import type { QueryClient } from '@tanstack/vue-query';
 import type { IProjectsData } from '@/modules/projects/types';

@@ -1,8 +1,8 @@
-import { projectsKeys } from "./projects.keys.query.ts";
-import { projectsUpdateQuery } from "./projects.update.query.ts";
-import { projectsDeleteQuery } from "./projects.delete.query";
-import { projectsGetQuery } from "./projects.get.query.ts";
-import { projectsCreateQuery } from "./projects.create.query.ts";
+import { projectsKeys } from './projects.keys.ts';
+import { projectsUpdateQuery } from './projects.update.ts';
+import { projectsDeleteQuery } from './projects.delete.ts';
+import { projectsGetQuery } from './projects.get.ts';
+import { projectsCreateQuery } from './projects.create.ts';
 
 export {
   projectsKeys,

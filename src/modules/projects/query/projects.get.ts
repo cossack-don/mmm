@@ -3,7 +3,7 @@
 // Операция: GET
 
 import { projectService } from '@api';
-import { projectsKeys } from '../query/projects.keys.query.ts';
+import { projectsKeys } from './projects.keys.ts';
 import { delayFetch } from '@/utils';
 
 export const projectsGetQuery = {

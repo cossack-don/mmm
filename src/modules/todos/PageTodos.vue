@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/vue-query";
-import { todosDeleteQuery, todosGetQuery } from "@project/todos/query";
-import { useRoute } from "vue-router";
-import { Card, Button } from "@components-ui";
-import { computed } from "vue";
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/vue-query';
+import { todosDeleteQuery, todosGetQuery } from './query';
+import { useRoute } from 'vue-router';
+import { Card, Button } from '@components-ui';
+import { computed } from 'vue';
 
 const route = useRoute();
 
@@ -75,7 +75,7 @@ const hasMore = computed(() => {
           :disabled="isFetchingNextPage"
           class="load-more-btn"
         >
-          {{ isFetchingNextPage ? "Загрузка..." : "Загрузить еще" }}
+          {{ isFetchingNextPage ? 'Загрузка...' : 'Загрузить еще' }}
         </button>
       </div>
     </div>

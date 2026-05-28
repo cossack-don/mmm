@@ -1,12 +1,9 @@
-// Файл: projects.delete.query.ts
-// Создан: 5/17/2026, 8:13:36 PM
-// Операция: DELETE
 import { projectService } from '@api';
 import {
   deleteByIdInfinityQuery,
   updateFieldsInfinityQuery,
 } from '@/utils/query';
-import { projectsKeys } from './projects.keys.query';
+import { projectsKeys } from './projects.keys';
 import type { QueryClient } from '@tanstack/vue-query';
 import { delayFetch } from '@/utils';
 import type { IProjectsData } from '@/modules/projects/types';
