@@ -1,10 +1,10 @@
-import { caseYearTargetsKeys } from "./case-year.keys.query.ts";
-import { caseYearService } from "@api";
+import { caseYearTargetsKeys } from './case-year.keys.query.ts';
+import { caseYearService } from '@api';
 
 export const caseYearPostQuery = {
   POST: () => ({
     mutationFn: async ({ idProject, name, pickedQ, month }: any) => {
-      await caseYearService.createTaskQ(idProject, name, `Q${pickedQ}`, month);
+      await caseYearService.createTaskQ(idProject, name, pickedQ, month);
     },
     // onMutate: (variables, context) => {
     // },

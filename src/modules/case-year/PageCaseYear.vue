@@ -1,14 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import {
-  Modal,
-  Card,
-  Button,
-  DropDown,
-  ReusableModal,
-  ReusableListOptions,
-} from '@components-ui';
-import { LifeCyclePage, Page } from '@components-pages';
+import { ReusableModal, ReusableListOptions } from '@components-ui';
+import { Page } from '@components-pages';
 import { useRoute } from 'vue-router';
 import { useQuery, useMutation } from '@tanstack/vue-query';
 import {
@@ -24,15 +17,15 @@ import {
   caseYearTargetsPostQuery,
   caseYearTargetsPutQuery,
 } from '@/modules/case-year/query/case-year-targets/index.ts';
-import { chainRequestsQuery } from './query/chain-requests.query.ts';
+// import { chainRequestsQuery } from './query/chain-requests.query.ts';
 
 const route = useRoute();
 
 // TODO POLLING EXAMPLE
-const MAX_COUNT_POLLING = 10;
-const TIME_POLLING = 2_000; // 2 секунды
-const START_COUNT_PILLING = ref(0);
-//
+// const MAX_COUNT_POLLING = 10;
+// const TIME_POLLING = 2_000; // 2 секунды
+// const START_COUNT_PILLING = ref(0);
+// //
 // const { data: statePolling } = useQuery({
 //   queryKey: ["getListCaseYearTargets"],
 //   queryFn: async () => {
@@ -90,116 +83,6 @@ const { mutate: createCaseYearTarget } = useMutation(
   caseYearTargetsPostQuery.POST
 );
 
-const idEditElement = ref(null);
-const isModalOpen = ref(false);
-const openModal = () => (isModalOpen.value = true);
-
-const isModalOpenTwo = ref(false);
-const openModalTwo = (id: any, nameTask: any) => {
-  stateTargetYearModal.value = true;
-
-  // isModalOpenTwo.value = true;
-  idEditElement.value = id;
-  stateModalName.value = nameTask;
-};
-const handleConfirmTwo = async () => {
-  putByIdCaseYearTask({
-    idProject: route.params.idProject,
-    idTask: idEditElement.value,
-    name: stateModalName.value,
-  });
-};
-
-const isModalOpenThree = ref(false);
-const openModalThree = () => (isModalOpenThree.value = true);
-const handleConfirmThree = async () => {
-  createCaseYearTarget({
-    idProject: route.params.idProject,
-    name: stateModalName.value,
-  });
-};
-
-const isModalOpenFour = ref(false);
-const openModalFour = (id, nameTarget) => {
-  isModalOpenFour.value = true;
-  idEditElement.value = id;
-  stateModalName.value = nameTarget;
-};
-
-const handleConfirmFour = () => {
-  putByIdCaseYearTarget({
-    idProject: route.params.idProject,
-    idTarget: idEditElement.value,
-    name: stateModalName.value,
-  });
-};
-
-const stateModalName = ref('');
-
-const optionsQ = ref<any>(Q);
-const pickedQ = ref(Q[0].id);
-
-const optionsMonth = ref<any>(listMonths);
-const pickedMonth = ref(listMonths[0].id);
-
-const handleConfirm = async () => {
-  createCaseYearTask({
-    idProject: route.params.idProject,
-    name: stateModalName.value,
-    pickedQ: pickedQ.value,
-    month: pickedMonth.value,
-  });
-
-  stateModalName.value = '';
-};
-
-const currentListMonths = computed(() => {
-  if (pickedQ.value === 1) {
-    const res = optionsMonth.value.filter((item: any) => item.keyQ === 'Q1');
-    pickedMonth.value = res[0].id;
-    return res;
-  } else if (pickedQ.value === 2) {
-    const res = optionsMonth.value.filter((item: any) => item.keyQ === 'Q2');
-    pickedMonth.value = res[0].id;
-    return res;
-  } else if (pickedQ.value === 3) {
-    const res = optionsMonth.value.filter((item: any) => item.keyQ === 'Q3');
-    pickedMonth.value = res[0].id;
-    return res;
-  } else if (pickedQ.value === 4) {
-    const res = optionsMonth.value.filter((item: any) => item.keyQ === 'Q4');
-    pickedMonth.value = res[0].id;
-    return res;
-  }
-});
-
-const onPickedOptionsTargets = (id: any, idTarget: any, name: any) => {
-  if (id === 1) {
-    deleteByIdCaseYearTarget({
-      idProject: route.params.idProject,
-      idTarget: idTarget,
-    });
-  } else if (id === 2) {
-    openModalFour(idTarget, name);
-  }
-};
-
-const onPickedOptionsTask = async (id: any, idTask: any, name: any) => {
-  if (id === 1) {
-    deleteByIdCaseYearTask({
-      idProject: route.params.idProject,
-      idTask: idTask,
-    });
-  } else if (id === 2) {
-    openModalTwo(idTask, name);
-  }
-};
-
-const changePickMonth = (event: any) => {
-  pickedMonth.value = event.target.value;
-};
-
-///refactoring v2
 const onDeleteByIdTargetYear = (id: number) => {
   deleteByIdCaseYearTarget({
     idProject: route.params.idProject,
@@ -207,9 +90,6 @@ const onDeleteByIdTargetYear = (id: number) => {
   });
 };
 
-const stateTargetYearModal = ref(false);
-
-////////// new
 const onDeleteByIdTask = (task) => {
   deleteByIdCaseYearTask({
     idProject: route.params.idProject,
@@ -234,7 +114,6 @@ const nameTargetYear = ref({ name: '', type: 'create', id: null });
 
 const onSaveTargetYear = () => {
   if (nameTargetYear.value.name.trim() === '') return;
-  console.log(nameTargetYear.value);
 
   if (nameTargetYear.value.type === mapTypesModal.create) {
     createCaseYearTarget({
@@ -258,9 +137,119 @@ const onChangeNameTargetYear = (item) => {
   nameTargetYear.value.id = item.id;
   nameTargetYear.value.type = mapTypesModal.update;
 };
+
+//
+const isOpenModalTasks = ref(false);
+
+const listMonths2 = [
+  { id: 1, name: 'Январь', keyQ: 'Q1' },
+  { id: 2, name: 'Февраль', keyQ: 'Q1' },
+  { id: 3, name: 'Март', keyQ: 'Q1' },
+  { id: 4, name: 'Апрель', keyQ: 'Q2' },
+  { id: 5, name: 'Май', keyQ: 'Q2' },
+  { id: 6, name: 'Июнь', keyQ: 'Q2' },
+  { id: 7, name: 'Июль', keyQ: 'Q3' },
+  { id: 8, name: 'Август', keyQ: 'Q3' },
+  { id: 9, name: 'Сентябрь', keyQ: 'Q3' },
+  { id: 10, name: 'Октябрь', keyQ: 'Q4' },
+  { id: 11, name: 'Ноябрь', keyQ: 'Q4' },
+  { id: 12, name: 'Декабрь', keyQ: 'Q4' },
+];
+const dataFrom = ref({
+  id: null,
+  name: '',
+  quarter: Q[0].name,
+  month: listMonths2[0],
+  type: 'create',
+});
+
+// Вычисляемое свойство для фильтрации месяцев по выбранному кварталу
+const filteredMonths = computed(() => {
+  return listMonths2.filter((month) => month.keyQ === dataFrom.value.quarter);
+});
+
+// Следим за изменением квартала и сбрасываем выбранный месяц на первый в новом квартале
+const updateMonthOnQuarterChange = () => {
+  if (filteredMonths.value.length > 0) {
+    dataFrom.value.month = filteredMonths.value[0];
+  }
+};
+
+const onOpenModalTasks = () => {
+  dataFrom.value.name = '';
+  isOpenModalTasks.value = true;
+
+  dataFrom.value.type = mapTypesModal.create;
+};
+
+const onSaveTask = () => {
+  // keyQ: 'Q1';
+  // month: 1;
+  // name: '23232';
+  console.log(dataFrom.value);
+  if (dataFrom.value.name.trim() === '') return;
+
+  if (dataFrom.value.type === mapTypesModal.create) {
+    createCaseYearTask({
+      idProject: route.params.idProject,
+      name: dataFrom.value.name,
+      pickedQ: dataFrom.value.quarter,
+      month: dataFrom.value.month.id,
+    });
+  } else if (dataFrom.value.type === mapTypesModal.update) {
+    putByIdCaseYearTask({
+      idProject: route.params.idProject,
+      idTask: dataFrom.value.id,
+      name: dataFrom.value.name,
+      pickedQ: dataFrom.value.quarter,
+      month: dataFrom.value.month.id,
+    });
+  }
+};
+
+const onUpdateByIdTask = (quarter, month, task) => {
+  onOpenModalTasks();
+
+  dataFrom.value.id = task.id;
+  dataFrom.value.name = task.name;
+  dataFrom.value.quarter = quarter.name;
+  dataFrom.value.month = month.name;
+  dataFrom.value.type = mapTypesModal.update;
+};
 </script>
 
 <template>
+  <ReusableModal
+    v-model="isOpenModalTasks"
+    title="Создание задачи для месяца"
+    :saveButtonText="
+      dataFrom.type === mapTypesModal.create ? 'Создать' : 'Обновить'
+    "
+    @onSave="onSaveTask"
+  >
+    <v-text-field
+      v-model="dataFrom.name"
+      label="Название задачи"
+    ></v-text-field>
+
+    <v-select
+      v-model="dataFrom.quarter"
+      :items="Q"
+      item-title="name"
+      item-value="name"
+      label="Выбор квартала"
+      @update:model-value="updateMonthOnQuarterChange"
+    ></v-select>
+
+    <v-select
+      v-model="dataFrom.month"
+      :items="filteredMonths"
+      item-title="name"
+      :item-value="(item) => item"
+      label="Выбор месяца"
+    ></v-select>
+  </ReusableModal>
+
   <ReusableModal
     v-model="isOpenModalTargetYear"
     title="Создание цели на год"
@@ -303,7 +292,7 @@ const onChangeNameTargetYear = (item) => {
     </template>
 
     <template #notEmptyBodyContent>
-      <v-btn @click="openModal"> Создание задачи </v-btn>
+      <v-btn @click="isOpenModalTasks = true"> Создание задачи </v-btn>
       <v-container fluid>
         <v-row>
           <v-col
@@ -320,7 +309,32 @@ const onChangeNameTargetYear = (item) => {
                   <v-row>
                     <v-col cols="12" v-for="month in Q.months" :key="month.id">
                       <v-card>
-                        <v-list lines="one" density="compact" class="pa-0">
+                        <ul>
+                          <li>
+                            <span class="font-weight-bold">
+                              {{ month.name }}
+                            </span>
+                          </li>
+
+                          <li
+                            v-for="task in month.tasks"
+                            :key="task.id"
+                            style="
+                              display: flex;
+                              justify-content: space-between;
+                              padding: 3px;
+                            "
+                          >
+                            <span style="font-size: 0.75rem">
+                              {{ task.name }}
+                            </span>
+                            <ReusableListOptions
+                              @onDelete="onDeleteByIdTask(task)"
+                              @onEdit="onUpdateByIdTask(Q, month, task)"
+                            />
+                          </li>
+                        </ul>
+                        <!-- <v-list lines="one" density="compact" class="pa-0">
                           <v-list-item>
                             <template v-slot:title>
                               <span class="font-weight-bold">
@@ -343,7 +357,7 @@ const onChangeNameTargetYear = (item) => {
                               />
                             </template>
                           </v-list-item>
-                        </v-list>
+                        </v-list> -->
                       </v-card>
                     </v-col>
                   </v-row>
@@ -355,81 +369,4 @@ const onChangeNameTargetYear = (item) => {
       </v-container>
     </template>
   </Page>
-
-  <LifeCyclePage
-    :isLoading="isLoadingCaseYearTargets || isLoadingCaseYear"
-    :isError="false"
-    :isSuccess="true"
-  >
-    <template #error>
-      <div>error</div>
-    </template>
-    <template #success>
-      <div>
-        <Modal
-          v-model="isModalOpen"
-          title="Создание задачи"
-          @confirm="handleConfirm"
-        >
-          <div style="display: flex">
-            <p style="margin-right: 10px">Название задачи</p>
-            <input v-model="stateModalName" placeholder="Название задачи" />
-          </div>
-
-          <div style="display: flex">
-            <p style="margin-right: 10px">Выбор квартала</p>
-            <select v-model="pickedQ">
-              <option
-                v-for="option in optionsQ"
-                :value="option.id"
-                :key="option.id"
-              >
-                {{ option.name }}
-              </option>
-            </select>
-          </div>
-
-          <div style="display: flex">
-            <p style="margin-right: 10px">Выбор месяца</p>
-            <select @change="changePickMonth" :value="pickedMonth">
-              <option
-                v-for="option in currentListMonths"
-                :value="option.id"
-                :key="option.id"
-              >
-                {{ option.name }}
-              </option>
-            </select>
-          </div>
-        </Modal>
-
-        <Modal
-          v-model="isModalOpenTwo"
-          title="Редактирование задачи"
-          @confirm="handleConfirmTwo"
-        >
-          <p>Название задачи</p>
-          <input v-model="stateModalName" placeholder="Название задачи" />
-        </Modal>
-
-        <Modal
-          v-model="isModalOpenThree"
-          title="Создание цели на год"
-          @confirm="handleConfirmThree"
-        >
-          <p>Название цели</p>
-          <input v-model="stateModalName" placeholder="Название цели" />
-        </Modal>
-
-        <Modal
-          v-model="isModalOpenFour"
-          title="Редактирование цели на год"
-          @confirm="handleConfirmFour"
-        >
-          <p>Название цели</p>
-          <input v-model="stateModalName" placeholder="Название цели" />
-        </Modal>
-      </div>
-    </template>
-  </LifeCyclePage>
 </template>

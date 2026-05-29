@@ -1,21 +1,21 @@
-import { API } from "@/api/createAxios";
+import { API } from '@/api/createAxios';
 
 export const caseYearService = {
   getList: (idProject: string | number) => {
     return API({
       url: `/project/${idProject}/case-year`,
-      method: "GET",
+      method: 'GET',
     });
   },
   createTaskQ: (
     idProject: string | number,
     name: string,
     keyQ: string,
-    month: number,
+    month: number
   ) => {
     return API({
       url: `/project/${idProject}/case-year`,
-      method: "POST",
+      method: 'POST',
       data: {
         name: name,
         keyQ: keyQ,
@@ -26,25 +26,29 @@ export const caseYearService = {
   deleteById: (idProject: number | string, idTaskQ: string | number) => {
     return API({
       url: `/project/${idProject}/case-year/${idTaskQ}`,
-      method: "DELETE",
+      method: 'DELETE',
     });
   },
   getById: (idProject: number | string, idTaskQ: string | number) => {
     return API({
       url: `/project/${idProject}/case-year/${idTaskQ}`,
-      method: "GET",
+      method: 'GET',
     });
   },
   putById: (
     idProject: number | string,
     idTaskQ: string | number,
     name: string,
+    pickedQ: any,
+    month: any
   ) => {
     return API({
       url: `/project/${idProject}/case-year/${idTaskQ}`,
-      method: "PUT",
+      method: 'PUT',
       data: {
         name: name,
+        keyQ: pickedQ,
+        month: month,
       },
     });
   },
