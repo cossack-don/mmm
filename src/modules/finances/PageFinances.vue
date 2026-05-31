@@ -11,7 +11,16 @@
               <li>
                 <span class="font-weight-bold"> Условия жизни </span>
               </li>
-
+              <li>
+                <span class="font-weight-bold">
+                  5-е (зарплата = ??) - (расходы = ??) = ???</span
+                >
+              </li>
+              <li>
+                <span class="font-weight-bold">
+                  20-е (зарплата = ??) - (расходы = ??) = ???</span
+                >
+              </li>
               <li
                 style="padding: 3px"
                 v-for="item in mockListFinanceCost"
@@ -113,6 +122,8 @@
 const mockListFinanceCost = [
   { id: 1, name: '5-e Зарплата' },
   { id: 2, name: '20-e Зарплата' },
+  { id: 33, name: 'Инвестицие - Зарплата' },
+
   { id: 3, name: '5-e Съемная квартира = 80.000 + 3.000' },
   { id: 4, name: '5-e & 20-e Личные расходы = 20.000 + 20.000' },
   { id: 5, name: '20-e Ипотека Реутов = 30.000' },
@@ -122,6 +133,7 @@ const mockListFinanceCost = [
   { id: 7, name: '10-e Страховка Реутов = Январь 30.000' },
   { id: 7, name: 'Страховка Реутов 2 = нету' },
   { id: 7, name: 'Налог Реутов = нету' },
+  { id: 7, name: 'Мат. выгода по Реутову - вычитают с ЗП' },
 ];
 
 const mockL = [

@@ -13,6 +13,13 @@ onMounted(() => checkHealthApp());
 // onUpdated(() => {
 //   // console.warn("Layout re-rendered!");
 // });
+
+import { useStoreSnackBar } from './store';
+import { storeToRefs } from 'pinia';
+
+const { pushMessageSnackBar } = useStoreSnackBar();
+const { refElementSnackBar, listMessagesSnackBar } =
+  storeToRefs(useStoreSnackBar());
 </script>
 
 <template>
@@ -26,7 +33,19 @@ onMounted(() => checkHealthApp());
     </template>
 
     <template #success>
+      <!-- <v-btn
+        color="success"
+        @click="pushMessageSnackBar({ type: 'error', text: 'text' })"
+        >Success</v-btn
+      > -->
       <isLayout />
+
+      <v-snackbar-queue
+        :ref="refElementSnackBar"
+        v-model="listMessagesSnackBar"
+        total-visible="5"
+        closable
+      />
     </template>
 
     <template #else>

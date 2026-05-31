@@ -10,6 +10,9 @@ import { QueryClient } from '@tanstack/vue-query';
 import { createRouter, createWebHistory } from 'vue-router';
 import { routes } from '@/router/routes';
 
+//pinia
+import { createPinia } from 'pinia';
+
 export const vuetify = createVuetify({
   components,
   directives,
@@ -35,3 +38,5 @@ export const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+export const pinia = createPinia();

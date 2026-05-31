@@ -84,10 +84,20 @@ const { mutate: createCaseYearTarget } = useMutation(
 );
 
 const onDeleteByIdTargetYear = (id: number) => {
-  deleteByIdCaseYearTarget({
-    idProject: route.params.idProject,
-    idTarget: id,
-  });
+  deleteByIdCaseYearTarget(
+    {
+      idProject: route.params.idProject,
+      idTarget: id,
+    },
+    {
+      onSuccess() {
+        pushMessageSnackBar({ type: 'success', text: 'Цель успешно удалена' });
+      },
+      onError() {
+        pushMessageSnackBar({ type: 'error', text: 'Цель не удалена' });
+      },
+    }
+  );
 };
 
 const onDeleteByIdTask = (task) => {
@@ -213,6 +223,10 @@ const onUpdateByIdTask = (quarter, monthId, task) => {
   dataFrom.value.month = monthId;
   dataFrom.value.type = mapTypesModal.update;
 };
+
+import { useStoreSnackBar } from '@/app/store';
+
+const { pushMessageSnackBar } = useStoreSnackBar();
 </script>
 
 <template>
