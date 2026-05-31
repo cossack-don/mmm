@@ -18,7 +18,7 @@ export const projectsGetQuery = {
   GET_LIST_INFINITY_SCROLL: async ({ pageParam = 0 }) => {
     const params = { limit: 20, offset: pageParam * 20 };
 
-    await delayFetch(500);
+    await delayFetch(1500);
 
     const { data } = await projectService.getList(params.limit, params.offset);
 

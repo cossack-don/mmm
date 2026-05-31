@@ -106,6 +106,12 @@ const baseLinks = [
     icon: 'mdi-finance',
     link: 'finances',
   },
+  {
+    id: 5,
+    name: 'Examples Query',
+    icon: 'mdi-school',
+    link: 'examples',
+  },
 ];
 const listLinks = [
   {

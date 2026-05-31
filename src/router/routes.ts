@@ -78,6 +78,15 @@ export const routes = [
         },
       },
       {
+        path: 'examples',
+        name: 'examples',
+        component: () => import('../modules/examples/PageExamples.vue'),
+        meta: {
+          nameRu: 'Examples-query',
+          // layout: "NavigationLayout",
+        },
+      },
+      {
         path: 'spirituality',
         name: 'spirituality',
         component: () => import('../modules/spirituality/PageSpirituality.vue'),
