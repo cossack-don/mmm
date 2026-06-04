@@ -5,6 +5,13 @@ import { useInfiniteQuery } from '@tanstack/vue-query';
 import { useInfiniteScroll } from '@vueuse/core';
 import { projectsGetQuery, projectsKeys } from '@/modules/projects/query';
 import { Card, Header } from './ui';
+import { useQueryInfinityScroll } from './useQueryInfinityScroll';
+import { projectService } from '@/api';
+
+const search = ref('');
+const onSearch = (searchValue: string) => {
+  search.value = searchValue;
+};
 
 const {
   data,
@@ -13,18 +20,11 @@ const {
   fetchNextPage,
   isFetchingNextPage,
   hasNextPage,
-} = useInfiniteQuery({
-  queryKey: [projectsKeys.getListProjectsInfinityScroll],
-  queryFn: projectsGetQuery.GET_LIST_INFINITY_SCROLL,
-  getNextPageParam: (lastPage, allPages) => {
-    // Вычисляем, есть ли следующая страница
-    const loadedCount = allPages.length * lastPage.limit;
-    const hasMore = loadedCount < lastPage.total;
-
-    return hasMore ? allPages.length : undefined;
-  },
-  initialPageParam: 0,
-});
+} = useQueryInfinityScroll(
+  projectsKeys.getListProjectsInfinityScroll,
+  projectService.getList,
+  search.value
+);
 
 // Все проекты из всех загруженных страниц
 const allProjects = computed(() => {
@@ -79,7 +79,11 @@ watch(
       <v-container>
         <v-row>
           <v-col cols="12" sm="6" md="4">
-            <Header :projects="allProjects" :totalProjects="totalProjects" />
+            <Header
+              @onSearch="onSearch"
+              :projects="allProjects"
+              :totalProjects="totalProjects"
+            />
           </v-col>
         </v-row>
       </v-container>

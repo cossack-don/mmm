@@ -1,13 +1,22 @@
 import { API } from '@/api/createAxios';
 
 export const projectService = {
-  getList: (limit: number = 10, offset: number = 0) => {
+  getList: (
+    limit: number = 10,
+    offset: number = 0,
+    search?: string,
+    sortBy?: string,
+    sortOrder?: string
+  ) => {
     return API({
       url: '/project',
       method: 'GET',
       params: {
         limit: limit,
         offset: offset,
+        search: search,
+        sortBy: undefined,
+        sortOrder: undefined,
       },
     });
   },

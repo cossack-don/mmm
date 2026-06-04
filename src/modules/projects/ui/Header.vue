@@ -17,6 +17,10 @@ const onCreateProject = () => {
   createProject({ name: nameProject.value });
   nameProject.value = '';
 };
+
+const search = ref('');
+
+const emit = defineEmits(['onSearch']);
 </script>
 
 <template>
@@ -26,6 +30,16 @@ const onCreateProject = () => {
       {{ props.totalProjects }} проектов
     </p>
 
+    <v-text-field
+      v-model="search"
+      :counter="10"
+      label="First name"
+      clearable
+      @keyup.enter="emit('onSearch', search)"
+    ></v-text-field>
+
+    <v-btn @click="emit('onSearch', search)">Найти</v-btn>
+    <v-btn @click="emit('onSearch', (search = ''))">Очистить</v-btn>
     <input
       v-model="nameProject"
       placeholder="Название проекта"
