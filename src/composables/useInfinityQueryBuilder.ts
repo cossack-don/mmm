@@ -1,12 +1,13 @@
 import { delayFetch } from '@/utils';
 import { useInfiniteQuery } from '@tanstack/vue-query';
 import { useInfiniteScroll } from '@vueuse/core';
-import type { Ref } from 'vue';
+import { computed, type Ref } from 'vue';
 
 // TODO Что пытаюсь решить
 // 1. Если бекенд отдает в total = 0 или нормальный total
 // 2. Переиспользуемый composobles для подгрузки на scroll
 // 3. Переиспользуемый composobles для подгрузки на кнопку загрузить еще 10
+// 4. Переиспользуемый composobles для подгрузки на кнопку загрузить еще 10 или скролл подгрузка + удаление записи из
 
 export interface IOptionsInfinity {
   initialPageParam?: number;
@@ -26,7 +27,7 @@ export const useInfinityQueryBuilder = (
   refScroll: Ref | null = null,
   queryKeys: string[],
   apiCb: ApiCallback,
-  search?: string | null | undefined,
+  search: Ref | null = null,
   limit: number = 20,
   offset: number = 20,
   apiFields?: Record<string, unknown>,
@@ -43,6 +44,16 @@ export const useInfinityQueryBuilder = (
     distanceScroll = 200,
   } = optionsInfinity || {};
 
+  const builderListKeys = computed(() => {
+    const baseKey = [...queryKeys];
+
+    if (search && search.value) {
+      return [...baseKey, search.value];
+    } else {
+      return baseKey;
+    }
+  });
+
   const {
     data,
     isError,
@@ -51,12 +62,12 @@ export const useInfinityQueryBuilder = (
     isFetchingNextPage,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: [...queryKeys, search],
+    queryKey: builderListKeys,
     queryFn: async ({ pageParam }) => {
       await delayFetch(delayTimeFetch);
 
       const { data } = await apiCb(
-        search,
+        search?.value,
         limit,
         pageParam * offset,
         apiFields

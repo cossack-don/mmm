@@ -1,32 +1,23 @@
 <script setup lang="ts">
 import { Page } from '@/components/pages';
 import { computed, ref } from 'vue';
-import { useInfiniteQuery } from '@tanstack/vue-query';
-import { useInfiniteScroll } from '@vueuse/core';
-import { projectsGetQuery, projectsKeys } from '@/modules/projects/query';
+import { projectsKeys } from '@/modules/projects/query';
 import { Card } from '@/modules/projects/ui';
-import { useInfinityQueryBuilder } from '../projects/useInfinityQueryBuilder';
+import { useInfinityQueryBuilder } from '@composables';
 import { projectService } from '@/api';
 
 const refScrollContainer = ref(null);
 
-const {
-  data,
-  isError,
-  isLoading,
-  fetchNextPage,
-  isFetchingNextPage,
-  hasNextPage,
-  onLoadMoreByButton,
-} = useInfinityQueryBuilder(
-  refScrollContainer,
-  [projectsKeys.getListProjectsInfinityScroll],
-  projectService.getList,
-  null,
-  20,
-  20,
-  { sortOrder: null, sortBy: null }
-);
+const { data, isError, isLoading, isFetchingNextPage } =
+  useInfinityQueryBuilder(
+    refScrollContainer,
+    [projectsKeys.getListProjectsInfinityScroll],
+    projectService.getList,
+    null,
+    10,
+    10,
+    { sortOrder: null, sortBy: null }
+  );
 
 const allProjects = computed(() => {
   if (!data.value) return [];
@@ -44,14 +35,7 @@ const allProjects = computed(() => {
       :isError="isError"
       :isEmptyContent="allProjects.length === 0"
     >
-      <template #pageError> error content </template>
-
-      <template #headerContent> header content </template>
-
       <template #notEmptyBodyContent>
-        <v-btn @click="onLoadMoreByButton"
-          >button {{ allProjects.length }}</v-btn
-        >
         <v-container>
           <v-row>
             <v-col

@@ -15,14 +15,7 @@ const {
 } = useMutation(projectsDeleteQuery.DELETE);
 
 const onDeleteByIdProject = (id: number) => {
-  deleteByIdProject(
-    { id: id }
-    // {
-    //   onSuccess() {
-    //     emit('onDelete', { id });
-    //   },
-    // }
-  );
+  deleteByIdProject({ id: id });
 };
 
 const isEditing = ref(false);

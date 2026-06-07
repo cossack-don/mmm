@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { Page } from '@/components/pages';
 import { computed, ref, watch } from 'vue';
-import { useInfiniteQuery } from '@tanstack/vue-query';
 import { useInfiniteScroll } from '@vueuse/core';
-import { projectsGetQuery, projectsKeys } from '@/modules/projects/query';
+import { projectsKeys } from '@/modules/projects/query';
 import { Card, Header } from './ui';
-import { useInfinityQueryBuilder } from './useInfinityQueryBuilder';
+import { useInfinityQueryBuilder } from '@composables';
 import { projectService } from '@/api';
 
 const search = ref('');
 const onSearch = (searchValue: string) => {
+  console.log(searchValue);
   search.value = searchValue;
 };
 
@@ -21,12 +21,13 @@ const {
   isFetchingNextPage,
   hasNextPage,
 } = useInfinityQueryBuilder(
+  null,
   [projectsKeys.getListProjectsInfinityScroll],
   projectService.getList,
-  search.value,
-  20,
-  20,
-  { da: 1 }
+  search,
+  3,
+  3,
+  { params: 1 }
 );
 
 // Все проекты из всех загруженных страниц
@@ -50,24 +51,6 @@ useInfiniteScroll(
   },
   { distance: 150 }
 );
-
-const localProjects = ref<any[]>([]);
-
-watch(
-  allProjects,
-  (newProjects) => {
-    // console.log('Получены новые проекты с сервера:', newProjects.length);
-
-    // Вариант 1: Полная замена
-    localProjects.value = [...newProjects];
-    // console.log(localProjects.value, 'list');
-  },
-  { immediate: true, deep: false } // immediate - запустить сразу при монтировании
-);
-
-// const onDelete = ({ id }) => {
-//   localProjects.value = localProjects.value.filter((item) => item.id !== id);
-// };
 </script>
 
 <template>

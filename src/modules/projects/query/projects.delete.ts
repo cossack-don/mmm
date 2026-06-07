@@ -17,6 +17,7 @@ export const projectsDeleteQuery = {
       // await client.cancelQueries({
       //   queryKey: [projectsKeys.getListProjectsInfinityScroll],
       // });
+      console.log(client, 3);
       // await client.setQueryData(
       //   [projectsKeys.getListProjectsInfinityScroll],
       //   (old: IProjectsData) =>
@@ -28,7 +29,7 @@ export const projectsDeleteQuery = {
     },
 
     mutationFn: async ({ id }: { id: number }) => {
-      await delayFetch(3000);
+      await delayFetch(1000);
       await projectService.deleteById(id);
 
       return { id: id };
@@ -40,6 +41,12 @@ export const projectsDeleteQuery = {
       _onMutateResult: unknown,
       { client }: { client: QueryClient }
     ) => {
+      // Получаем текущий кэш
+      const currentCache = client.getQueryData([
+        projectsKeys.getListProjectsInfinityScroll,
+      ]);
+      console.log('4. Текущий кэш до удаления:', currentCache);
+
       client.setQueryData(
         [projectsKeys.getListProjectsInfinityScroll],
         (old: IProjectsData) => deleteByIdInfinityQuery(old, id)
