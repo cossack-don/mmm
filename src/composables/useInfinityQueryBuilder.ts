@@ -24,7 +24,7 @@ export type ApiCallback = (
 ) => Promise<any>;
 
 export const useInfinityQueryBuilder = (
-  refScroll: Ref | null = null,
+  refScroll: Ref | Window | null = null,
   queryKeys: string[],
   apiCb: ApiCallback,
   search: Ref | null = null,

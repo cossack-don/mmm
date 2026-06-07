@@ -5,7 +5,7 @@ import Button from './Button.vue';
 import DropDown from './DropDown.vue';
 
 import ErrorPage from '../pages/ErrorPage.vue';
-import LifeCyclePage from '../pages/LifeCyclePage.vue';
+
 import EmptyPage from '../pages/EmptyPage.vue';
 import ReusableListOptions from './ReusableListOptions.vue';
 
@@ -17,7 +17,6 @@ export {
   Card,
   Button,
   DropDown,
-  LifeCyclePage,
   ErrorPage,
   EmptyPage,
   ReusableListOptions,

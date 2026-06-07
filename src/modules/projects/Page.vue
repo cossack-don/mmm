@@ -1,32 +1,29 @@
 <script setup lang="ts">
 import { Page } from '@/components/pages';
-import { computed, ref, watch } from 'vue';
-import { useInfiniteScroll } from '@vueuse/core';
+import { computed, ref } from 'vue';
 import { projectsKeys } from '@/modules/projects/query';
-import { Card, Header } from './ui';
+import { ListCards, Header } from './ui';
 import { useInfinityQueryBuilder } from '@composables';
 import { projectService } from '@/api';
 
 const search = ref('');
 const onSearch = (searchValue: string) => {
-  console.log(searchValue);
   search.value = searchValue;
+  isSerach.value = true;
 };
 
-const {
-  data,
-  isError,
-  isLoading,
-  fetchNextPage,
-  isFetchingNextPage,
-  hasNextPage,
-} = useInfinityQueryBuilder(
-  null,
+const onClearSearch = () => {
+  search.value = '';
+  isSerach.value = false;
+};
+
+const { data, isLoading, isFetchingNextPage } = useInfinityQueryBuilder(
+  window,
   [projectsKeys.getListProjectsInfinityScroll],
   projectService.getList,
   search,
-  3,
-  3,
+  20,
+  20,
   { params: 1 }
 );
 
@@ -42,60 +39,29 @@ const totalProjects = computed(() => {
   return data.value.pages[0]?.total || 0;
 });
 
-useInfiniteScroll(
-  window,
-  () => {
-    if (hasNextPage.value && !isFetchingNextPage.value && !isLoading.value) {
-      fetchNextPage();
-    }
-  },
-  { distance: 150 }
-);
+const isSerach = ref(false);
 </script>
 
 <template>
   <Page
-    :isLoading="isLoading"
-    :isError="isError"
+    :isLoadingContent="isLoading"
+    :isSearchProcess="isSerach"
     :isEmptyContent="allProjects.length === 0"
   >
-    <template #pageError> error content </template>
-
     <template #headerContent>
-      <v-container>
-        <v-row>
-          <v-col cols="12" sm="6" md="4">
-            <Header
-              @onSearch="onSearch"
-              :projects="allProjects"
-              :totalProjects="totalProjects"
-            />
-          </v-col>
-        </v-row>
-      </v-container>
+      <Header
+        @onSearch="onSearch"
+        @onClearSearch="onClearSearch"
+        :projects="allProjects"
+        :totalProjects="totalProjects"
+      />
     </template>
 
     <template #notEmptyBodyContent>
-      <v-container>
-        <v-row>
-          <v-col
-            v-for="item in allProjects"
-            :key="item.id"
-            cols="12"
-            sm="6"
-            md="4"
-          >
-            <Card :item="item" />
-          </v-col>
-        </v-row>
-
-        <v-progress-circular
-          style="display: flex; margin: 0 auto; margin-top: 35px"
-          v-if="isFetchingNextPage"
-          color="green"
-          indeterminate
-        />
-      </v-container>
+      <ListCards
+        :allProjects="allProjects"
+        :isFetchingNextPage="isFetchingNextPage"
+      />
     </template>
   </Page>
 </template>

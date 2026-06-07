@@ -6,7 +6,6 @@ import { projectsDeleteQuery, projectsUpdateQuery } from '../query';
 const props = defineProps<{
   item: any;
 }>();
-const emit = defineEmits(['onDelete']);
 
 const {
   isPending: isPendingDelete,
