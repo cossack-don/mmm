@@ -2,11 +2,10 @@ import { API } from '@/api/createAxios';
 
 export const projectService = {
   getList: (
+    search?: string | null | undefined,
     limit: number = 10,
     offset: number = 0,
-    search?: string,
-    sortBy?: string,
-    sortOrder?: string
+    apiFields?: any
   ) => {
     return API({
       url: '/project',
@@ -15,8 +14,8 @@ export const projectService = {
         limit: limit,
         offset: offset,
         search: search,
-        sortBy: undefined,
-        sortOrder: undefined,
+        sortBy: undefined, // apiFields.sortBy
+        sortOrder: undefined, // apiFields.sortOrder
       },
     });
   },

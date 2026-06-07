@@ -5,6 +5,10 @@ import { useInfiniteQuery } from '@tanstack/vue-query';
 import { useInfiniteScroll } from '@vueuse/core';
 import { projectsGetQuery, projectsKeys } from '@/modules/projects/query';
 import { Card } from '@/modules/projects/ui';
+import { useInfinityQueryBuilder } from '../projects/useInfinityQueryBuilder';
+import { projectService } from '@/api';
+
+const refScrollContainer = ref(null);
 
 const {
   data,
@@ -13,33 +17,21 @@ const {
   fetchNextPage,
   isFetchingNextPage,
   hasNextPage,
-} = useInfiniteQuery({
-  queryKey: [projectsKeys.getListProjectsInfinityScroll],
-  queryFn: projectsGetQuery.GET_LIST_INFINITY_SCROLL,
-  getNextPageParam: (lastPage, allPages) => {
-    const loadedCount = allPages.length * lastPage.limit;
-    const hasMore = loadedCount < lastPage.total;
-
-    return hasMore ? allPages.length : undefined;
-  },
-  initialPageParam: 0,
-});
+  onLoadMoreByButton,
+} = useInfinityQueryBuilder(
+  refScrollContainer,
+  [projectsKeys.getListProjectsInfinityScroll],
+  projectService.getList,
+  null,
+  20,
+  20,
+  { sortOrder: null, sortBy: null }
+);
 
 const allProjects = computed(() => {
   if (!data.value) return [];
   return data.value.pages.flatMap((page) => page.data);
 });
-
-const refScrollContainer = ref(null);
-useInfiniteScroll(
-  refScrollContainer,
-  () => {
-    if (hasNextPage.value && !isFetchingNextPage.value && !isLoading.value) {
-      fetchNextPage();
-    }
-  },
-  { distance: 100 }
-);
 </script>
 
 <template>
@@ -57,6 +49,9 @@ useInfiniteScroll(
       <template #headerContent> header content </template>
 
       <template #notEmptyBodyContent>
+        <v-btn @click="onLoadMoreByButton"
+          >button {{ allProjects.length }}</v-btn
+        >
         <v-container>
           <v-row>
             <v-col

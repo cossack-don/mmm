@@ -5,7 +5,7 @@ import { useInfiniteQuery } from '@tanstack/vue-query';
 import { useInfiniteScroll } from '@vueuse/core';
 import { projectsGetQuery, projectsKeys } from '@/modules/projects/query';
 import { Card, Header } from './ui';
-import { useQueryInfinityScroll } from './useQueryInfinityScroll';
+import { useInfinityQueryBuilder } from './useInfinityQueryBuilder';
 import { projectService } from '@/api';
 
 const search = ref('');
@@ -20,10 +20,13 @@ const {
   fetchNextPage,
   isFetchingNextPage,
   hasNextPage,
-} = useQueryInfinityScroll(
-  projectsKeys.getListProjectsInfinityScroll,
+} = useInfinityQueryBuilder(
+  [projectsKeys.getListProjectsInfinityScroll],
   projectService.getList,
-  search.value
+  search.value,
+  20,
+  20,
+  { da: 1 }
 );
 
 // Все проекты из всех загруженных страниц
