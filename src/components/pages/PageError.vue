@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface IProps {
-  statusError: null | number;
+  statusError?: null | number;
 }
 
 const props = withDefaults(defineProps<IProps>(), {
@@ -9,14 +9,14 @@ const props = withDefaults(defineProps<IProps>(), {
 </script>
 
 <template>
-  <div class="error-app">
-    Error App <br />
-    status - {{ props.statusError ?? "статус не пришел" }}
+  <div class="page-error">
+    Page Error <br />
+    status - {{ props.statusError ?? 'статус не пришел' }}
   </div>
 </template>
 
 <style scoped>
-.error-app {
+.page-error {
   display: flex;
   flex-direction: column;
   justify-content: center;

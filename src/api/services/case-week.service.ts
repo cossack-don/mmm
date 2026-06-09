@@ -1,16 +1,16 @@
-import { API } from "@/api/createAxios";
+import { API } from '@/app/configs';
 
 export const caseWeekService = {
   getList: (idProject: string | number) => {
     return API({
       url: `/project/${idProject}/case-week`,
-      method: "GET",
+      method: 'GET',
     });
   },
   createTaskDay: (idProject: string | number, name: string, day: string) => {
     return API({
       url: `/project/${idProject}/case-week`,
-      method: "POST",
+      method: 'POST',
       data: {
         name: name,
         day: day,
@@ -20,7 +20,7 @@ export const caseWeekService = {
   deleteById: (idProject: number | string, idTask: string | number) => {
     return API({
       url: `/project/${idProject}/case-week/${idTask}`,
-      method: "DELETE",
+      method: 'DELETE',
     });
   },
   // getById: (idProject: number | string, idTaskQ: string | number) => {

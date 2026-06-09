@@ -17,15 +17,16 @@ const onClearSearch = () => {
   isSerach.value = false;
 };
 
-const { data, isLoading, isFetchingNextPage } = useInfinityQueryBuilder(
-  window,
-  [projectsKeys.getListProjectsInfinityScroll],
-  projectService.getList,
-  search,
-  20,
-  20,
-  { params: 1 }
-);
+const { data, isLoading, isFetchingNextPage, isError } =
+  useInfinityQueryBuilder(
+    window,
+    [projectsKeys.getListProjectsInfinityScroll],
+    projectService.getList,
+    search,
+    20,
+    20,
+    { params: 1 }
+  );
 
 // Все проекты из всех загруженных страниц
 const allProjects = computed(() => {
@@ -45,10 +46,11 @@ const isSerach = ref(false);
 <template>
   <Page
     :isLoadingContent="isLoading"
-    :isSearchProcess="isSerach"
+    :isErrorContent="isError"
+    :isSearchContent="isSerach"
     :isEmptyContent="allProjects.length === 0"
   >
-    <template #headerContent>
+    <template #contentHeader>
       <Header
         @onSearch="onSearch"
         @onClearSearch="onClearSearch"
@@ -57,7 +59,7 @@ const isSerach = ref(false);
       />
     </template>
 
-    <template #notEmptyBodyContent>
+    <template #contentBody>
       <ListCards
         :allProjects="allProjects"
         :isFetchingNextPage="isFetchingNextPage"

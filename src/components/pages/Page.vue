@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import ErrorPage from './ErrorPage.vue';
+import {
+  PageError,
+  ContentError,
+  ContentSearchEmpty,
+  ContentNotItems,
+} from '.';
 
 interface IProps {
   isLoadingPage?: boolean;
@@ -7,16 +12,18 @@ interface IProps {
   isEmptyContent?: boolean;
 
   isLoadingContent?: boolean;
-  isSearchProcess?: boolean;
+  isErrorContent?: boolean;
+  isSearchContent?: boolean;
 }
 
 const props = withDefaults(defineProps<IProps>(), {
   isLoadingPage: false,
   isErrorPage: false,
-  isEmptyContent: false,
 
+  isEmptyContent: false,
   isLoadingContent: false,
-  isSearchProcess: false,
+  isErrorContent: false,
+  isSearchContent: false,
 });
 </script>
 
@@ -30,13 +37,13 @@ const props = withDefaults(defineProps<IProps>(), {
 
   <template v-else-if="props.isErrorPage">
     <slot name="pageError">
-      <ErrorPage />
+      <PageError />
     </slot>
   </template>
 
-  <template v-else>
+  <template v-else-if="!props.isErrorPage && !props.isLoadingPage">
     <slot name="pageSuccess">
-      <slot name="headerContent" />
+      <slot name="contentHeader" />
 
       <v-progress-circular
         v-if="props.isLoadingContent"
@@ -45,34 +52,26 @@ const props = withDefaults(defineProps<IProps>(), {
         indeterminate
       />
 
-      <template v-else-if="props.isEmptyContent && props.isSearchProcess">
-        <slot name="emptyBodyContent">
-          <v-empty-state
-            title="Поиск ничего не нашел"
-            text="Попробуйте ввести подругому"
-            image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
-          />
+      <template v-else-if="props.isErrorContent">
+        <slot name="сontentError">
+          <ContentError />
         </slot>
       </template>
 
-      <template v-else-if="props.isEmptyContent && !props.isSearchProcess">
-        <slot name="emptyBodyContent">
-          <v-empty-state
-            title="Проектов нет"
-            text="Создайте пожалуйста проект"
-            image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
-          />
+      <template v-else-if="props.isEmptyContent && props.isSearchContent">
+        <slot name="сontentSearchEmpty">
+          <ContentSearchEmpty />
+        </slot>
+      </template>
+
+      <template v-else-if="props.isEmptyContent && !props.isSearchContent">
+        <slot name="сontentNotItems">
+          <ContentNotItems />
         </slot>
       </template>
 
       <template v-else>
-        <slot name="notEmptyBodyContent">
-          <v-empty-state
-            title="Что-то пошло не так с API"
-            text="The page you were looking for does not exist"
-            image="https://vuetifyjs.b-cdn.net/docs/images/logos/v.png"
-          />
-        </slot>
+        <slot name="contentBody" />
       </template>
     </slot>
   </template>

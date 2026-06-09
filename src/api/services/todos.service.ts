@@ -1,4 +1,4 @@
-import { API } from "@/api/createAxios";
+import { API } from '@/app/configs';
 
 export const todosService = {
   getList: (idProject: any, limit = 10, offset = 0, total = null) => {
@@ -9,13 +9,13 @@ export const todosService = {
         offset: offset,
         total: total,
       },
-      method: "GET",
+      method: 'GET',
     });
   },
   deleteById: (idProject: string, id: number | string) => {
     return API({
       url: `/project/${idProject}/todos/${id}`,
-      method: "DELETE",
+      method: 'DELETE',
     });
   },
   // createTodo: (idProject, name: string, description: string) => {

@@ -1,57 +1,37 @@
 <script setup lang="ts">
-import { onMounted, onUpdated } from 'vue';
-import { LifeCycleApp, ErrorApp, DefaultApp } from './ui';
-import { controllerApp } from './controller.app';
+import { onUpdated } from 'vue';
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 import { isLayout } from '@/app/layouts';
-
-const { checkHealthApp, isError, isLoading, isSuccess, statusError } =
-  controllerApp();
-
-onMounted(() => checkHealthApp());
-
-// onUpdated(() => {
-//   // console.warn("Layout re-rendered!");
-// });
-
 import { useStoreSnackBar } from './store';
 import { storeToRefs } from 'pinia';
+import { useCheckHealth } from '@/api/services/check-health';
+import { Page } from '@components-pages';
+import ProviderApp from './ProviderApp.vue';
 
-const { pushMessageSnackBar } = useStoreSnackBar();
+const { isLoading, isError } = useCheckHealth();
+
+onUpdated(() => console.warn('Layout re-rendered!'));
+
 const { refElementSnackBar, listMessagesSnackBar } =
   storeToRefs(useStoreSnackBar());
 </script>
 
 <template>
-  <LifeCycleApp
-    :isLoading="isLoading"
-    :isError="isError"
-    :isSuccess="isSuccess"
-  >
-    <template #error>
-      <ErrorApp :statusError="statusError" />
+  <Page :isLoadingPage="isLoading" :isErrorPage="isError">
+    <template #contentBody>
+      <ProviderApp>
+        <isLayout />
+      </ProviderApp>
     </template>
-
-    <template #success>
-      <!-- <v-btn
-        color="success"
-        @click="pushMessageSnackBar({ type: 'error', text: 'text' })"
-        >Success</v-btn
-      > -->
-      <isLayout />
-
-      <v-snackbar-queue
-        :ref="refElementSnackBar"
-        v-model="listMessagesSnackBar"
-        total-visible="5"
-        closable
-      />
-    </template>
-
-    <template #else>
-      <DefaultApp />
-    </template>
-  </LifeCycleApp>
+  </Page>
 
   <VueQueryDevtools />
+
+  <v-snackbar-queue
+    :ref="refElementSnackBar"
+    v-model="listMessagesSnackBar"
+    total-visible="5"
+    location="top end"
+    closable
+  />
 </template>

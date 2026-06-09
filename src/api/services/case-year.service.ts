@@ -1,4 +1,4 @@
-import { API } from '@/api/createAxios';
+import { API } from '@/app/configs';
 
 export const caseYearService = {
   getList: (idProject: string | number) => {

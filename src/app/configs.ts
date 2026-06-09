@@ -8,7 +8,15 @@ import { QueryClient } from '@tanstack/vue-query';
 
 // router
 import { createRouter, createWebHistory } from 'vue-router';
-import { routes } from '@/router/routes';
+import { routes } from '@/app/router';
+import { setupAuthGuard } from '@/app/router/auth.middleware';
+
+// axios
+import axios from 'axios';
+import {
+  setupInterceptorRequest,
+  setupInterceptorResponse,
+} from '@/api/interceptors';
 
 //pinia
 import { createPinia } from 'pinia';
@@ -39,4 +47,14 @@ export const router = createRouter({
   routes,
 });
 
+// setupAuthGuard(router);
+
 export const pinia = createPinia();
+
+export const API = axios.create({
+  baseURL: 'http://localhost:3000',
+  timeout: 5000,
+});
+
+setupInterceptorRequest(API);
+setupInterceptorResponse(API);

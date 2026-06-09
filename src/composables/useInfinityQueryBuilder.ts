@@ -8,6 +8,7 @@ import { computed, type Ref } from 'vue';
 // 2. Переиспользуемый composobles для подгрузки на scroll
 // 3. Переиспользуемый composobles для подгрузки на кнопку загрузить еще 10
 // 4. Переиспользуемый composobles для подгрузки на кнопку загрузить еще 10 или скролл подгрузка + удаление записи из
+// 5. как быть когда есть фильтров много помимо search
 
 export interface IOptionsInfinity {
   initialPageParam?: number;
