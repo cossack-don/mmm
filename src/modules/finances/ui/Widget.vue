@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Chart from './Chart.vue';
-import AppCard from './Card.vue';
 import IncomeCard from './ListCards.vue';
 import { useFinance, subtractPercent } from '../useFinances';
 import { ref, computed } from 'vue';
@@ -143,13 +142,42 @@ const calcClearSumTwenty = computed(() => {
 
   return res.toLocaleString('ru-RU');
 });
+
+const calcClearAllSum = computed(() => {
+  const res1 = totalSumFiveIncomes.value - totalSumFiveCosts.value;
+
+  const res2 = totalSumTwentyIncomes.value - totalSumTwentyCosts.value;
+  const sum = res1 + res2;
+  return sum.toLocaleString('ru-RU');
+});
+
+const callAllSumIncomes = computed(() => {
+  const sum =
+    Number(listFiveIncomes.value[0]) + Number(listTwentyIncomes.value[0]);
+  return sum.toLocaleString('ru-RU');
+});
+
+const calcAllSumCosts = computed(() => {
+  const part1 = listFiveCosts.value.reduce((sum, field) => {
+    const val = Number(field);
+    return sum + (isNaN(val) ? 0 : val);
+  }, 0);
+
+  const part2 = listTwentyCosts.value.reduce((sum, field) => {
+    const val = Number(field);
+    return sum + (isNaN(val) ? 0 : val);
+  }, 0);
+
+  const sum = part1 + part2;
+
+  return sum.toLocaleString('ru-RU');
+});
 </script>
 
 <template>
   <DashboardGrid>
     <template #chart>
       <Chart
-        style="width: 300px"
         :excellent-start="excellentStart"
         :excellent-step="excellentStep"
         :bad-start="badStart"
@@ -172,6 +200,15 @@ const calcClearSumTwenty = computed(() => {
         >Рассчитать</AppButton
       >
     </template>
+    <template #infoMonth>
+      <InfoBanner variant="success">
+        <div class="income-card__total">
+          1. Доходы в месяц - {{ callAllSumIncomes }}<br />
+          2. Расходы в месяц - {{ calcAllSumCosts }}<br />
+          3. Остаток в месяц - {{ calcClearAllSum }}<br />
+        </div>
+      </InfoBanner>
+    </template>
 
     <template #half-1>
       <InfoBanner variant="success">
@@ -179,7 +216,6 @@ const calcClearSumTwenty = computed(() => {
           Итого 5-е остаток: <strong>{{ calcClearSumFive }}</strong>
         </div>
       </InfoBanner>
-      <AppCard> </AppCard>
     </template>
 
     <template #half-2>
@@ -202,6 +238,7 @@ const calcClearSumTwenty = computed(() => {
 
     <template #slot-2>
       <IncomeCard
+        type="expense"
         @update:fields="onFieldsChange2"
         @update:total="updateTotalSumFiveCosts"
         :field-labels="listLabelsFiveCosts"
@@ -222,6 +259,7 @@ const calcClearSumTwenty = computed(() => {
 
     <template #slot-4>
       <IncomeCard
+        type="expense"
         @update:fields="onFieldsChange4"
         @update:total="updateTotalSumTwentyCosts"
         title="Мои расходы 20-е"

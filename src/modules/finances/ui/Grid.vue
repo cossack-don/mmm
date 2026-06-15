@@ -10,6 +10,9 @@
       <slot name="banner" />
     </div>
 
+    <div v-if="$slots.infoMonth" class="dashboard-grid__info-month">
+      <slot name="infoMonth" />
+    </div>
     <!-- 2 слота 50/50 после баннера -->
     <div
       v-if="$slots['half-1'] || $slots['half-2']"
@@ -54,6 +57,10 @@
 }
 
 .dashboard-grid__banner {
+  width: 100%;
+}
+
+.dashboard-grid__info-month {
   width: 100%;
 }
 

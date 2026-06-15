@@ -1,31 +1,34 @@
 <template>
-  <AppCard variant="elevated">
+  <AppCard
+    variant="elevated"
+    :class="['finance-card', `finance-card--${type}`]"
+  >
     <template #header>
-      <div class="income-card__header">
+      <div class="finance-card__header">
         <h3>{{ title }}</h3>
-        <span class="income-card__count">{{ fields.length }}</span>
+        <span class="finance-card__count">{{ fields.length }}</span>
       </div>
     </template>
 
-    <div class="income-card__total">
+    <div class="finance-card__total">
       Общая сумма: <strong>{{ formattedTotal }}</strong>
     </div>
 
-    <div class="income-card__fields">
+    <div class="finance-card__fields">
       <div
         v-for="(field, index) in fields"
         :key="field.id"
-        class="income-card__field-wrapper"
+        class="finance-card__field-wrapper"
       >
         <AppInput
           v-model="field.value"
           :label="fieldLabels[index] || `Поле-${index + 1}`"
           type="number"
           placeholder="Введите сумму"
-          class="income-card__input"
+          class="finance-card__input"
         />
         <button
-          class="income-card__remove-btn"
+          class="finance-card__remove-btn"
           @click="removeField(index)"
           :disabled="fields.length === 1"
           title="Удалить поле"
@@ -36,7 +39,7 @@
     </div>
 
     <template #footer>
-      <button class="income-card__add-btn" @click="addField">
+      <button class="finance-card__add-btn" @click="addField">
         + Добавить поле
       </button>
     </template>
@@ -51,11 +54,13 @@ import AppInput from './Input.vue';
 const props = withDefaults(
   defineProps<{
     title?: string;
+    type?: 'income' | 'expense';
     initialValues?: (string | number)[];
     fieldLabels?: string[];
   }>(),
   {
     title: 'Доходы',
+    type: 'income',
     initialValues: () => [''],
     fieldLabels: () => [],
   }
@@ -66,12 +71,12 @@ const emit = defineEmits<{
   'update:fields': [value: (string | number)[]];
 }>();
 
-interface IncomeField {
+interface FinanceField {
   id: number;
   value: string | number;
 }
 
-const fields = ref<IncomeField[]>(
+const fields = ref<FinanceField[]>(
   props.initialValues.map((val, i) => ({ id: i + 1, value: val }))
 );
 
@@ -117,32 +122,30 @@ function removeField(index: number) {
 </script>
 
 <style scoped>
-.income-card__header {
+.finance-card__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.income-card__header h3 {
+.finance-card__header h3 {
   margin: 0;
   font-size: 18px;
   color: #333;
 }
 
-.income-card__count {
+.finance-card__count {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #4caf50;
-  color: #fff;
   font-size: 14px;
   font-weight: bold;
 }
 
-.income-card__total {
+.finance-card__total {
   padding: 10px 0;
   font-size: 16px;
   color: #333;
@@ -151,28 +154,27 @@ function removeField(index: number) {
   margin-bottom: 12px;
 }
 
-.income-card__total strong {
-  color: #4caf50;
+.finance-card__total strong {
   font-size: 20px;
 }
 
-.income-card__fields {
+.finance-card__fields {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.income-card__field-wrapper {
+.finance-card__field-wrapper {
   display: flex;
   gap: 8px;
   align-items: flex-end;
 }
 
-.income-card__input {
+.finance-card__input {
   flex: 1;
 }
 
-.income-card__remove-btn {
+.finance-card__remove-btn {
   width: 36px;
   height: 36px;
   margin-bottom: 2px;
@@ -188,25 +190,23 @@ function removeField(index: number) {
   justify-content: center;
 }
 
-.income-card__remove-btn:hover:not(:disabled) {
+.finance-card__remove-btn:hover:not(:disabled) {
   background: #f44336;
   color: #fff;
   transform: scale(1.05);
 }
 
-.income-card__remove-btn:disabled {
+.finance-card__remove-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
 }
 
-.income-card__add-btn {
+.finance-card__add-btn {
   width: 100%;
   padding: 10px;
   font-size: 14px;
   font-weight: 500;
-  color: #4caf50;
   background: none;
-  border: 2px dashed #4caf50;
   border-radius: 8px;
   cursor: pointer;
   transition:
@@ -214,8 +214,63 @@ function removeField(index: number) {
     color 0.2s;
 }
 
-.income-card__add-btn:hover {
+/* Income card styles (green) */
+.finance-card--income .finance-card__count {
   background: #4caf50;
+  color: #fff;
+}
+
+.finance-card--income .finance-card__total strong {
+  color: #4caf50;
+}
+
+.finance-card--income .finance-card__remove-btn {
+  border-color: #f44336;
+  color: #f44336;
+}
+
+.finance-card--income .finance-card__remove-btn:hover:not(:disabled) {
+  background: #f44336;
+  color: #fff;
+}
+
+.finance-card--income .finance-card__add-btn {
+  color: #4caf50;
+  border: 2px dashed #4caf50;
+}
+
+.finance-card--income .finance-card__add-btn:hover {
+  background: #4caf50;
+  color: #fff;
+}
+
+/* Expense card styles (red) */
+.finance-card--expense .finance-card__count {
+  background: #f44336;
+  color: #fff;
+}
+
+.finance-card--expense .finance-card__total strong {
+  color: #f44336;
+}
+
+.finance-card--expense .finance-card__remove-btn {
+  border-color: #4caf50;
+  color: #4caf50;
+}
+
+.finance-card--expense .finance-card__remove-btn:hover:not(:disabled) {
+  background: #4caf50;
+  color: #fff;
+}
+
+.finance-card--expense .finance-card__add-btn {
+  color: #f44336;
+  border: 2px dashed #f44336;
+}
+
+.finance-card--expense .finance-card__add-btn:hover {
+  background: #f44336;
   color: #fff;
 }
 </style>
