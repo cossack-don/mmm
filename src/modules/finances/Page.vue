@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Widget />
     <v-container fluid>
       <v-row>
         <v-col cols="12" md="12" class="mx-auto">
@@ -28,4 +29,5 @@
 </template>
 <script setup lang="ts">
 import { TableFinance } from './ui';
+import Widget from './ui/Widget.vue';
 </script>

@@ -1,5 +1,6 @@
 import { routerAuth } from '@/modules/auth/router';
 import { routerExamples } from '@/modules/examples/router';
+import { routerFinances } from '@/modules/finances/router';
 import { routerProjects } from '@/modules/projects/router';
 
 export const routes = [
@@ -64,15 +65,7 @@ export const routes = [
           // layout: "NavigationLayout",
         },
       },
-      {
-        path: 'finances',
-        name: 'finances',
-        component: () => import('@/modules/finances/PageFinances.vue'),
-        meta: {
-          nameRu: 'Финансы',
-          // layout: "NavigationLayout",
-        },
-      },
+      routerFinances,
       routerExamples,
       {
         path: 'spirituality',
