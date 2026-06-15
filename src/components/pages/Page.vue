@@ -11,6 +11,9 @@ interface IProps {
   isErrorPage?: boolean;
   isEmptyContent?: boolean;
 
+  isLoadingHeader?: boolean;
+  isErrorHeader?: boolean;
+
   isLoadingContent?: boolean;
   isErrorContent?: boolean;
   isSearchContent?: boolean;
@@ -19,6 +22,9 @@ interface IProps {
 const props = withDefaults(defineProps<IProps>(), {
   isLoadingPage: false,
   isErrorPage: false,
+
+  isLoadingHeader: false,
+  isErrorHeader: false,
 
   isEmptyContent: false,
   isLoadingContent: false,
@@ -43,7 +49,22 @@ const props = withDefaults(defineProps<IProps>(), {
 
   <template v-else-if="!props.isErrorPage && !props.isLoadingPage">
     <slot name="pageSuccess">
-      <slot name="contentHeader" />
+      <v-progress-circular
+        v-if="props.isLoadingHeader"
+        style="display: flex; margin: 0 auto; height: 150px"
+        color="green"
+        indeterminate
+      />
+
+      <template v-else-if="props.isErrorHeader">
+        <div style="display: flex; margin: 0 auto; height: 150px">
+          error-header
+        </div>
+      </template>
+
+      <template v-else>
+        <slot name="contentHeader" />
+      </template>
 
       <v-progress-circular
         v-if="props.isLoadingContent"

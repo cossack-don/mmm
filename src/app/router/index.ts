@@ -58,7 +58,7 @@ export const routes = [
       {
         path: 'todos',
         name: 'todos',
-        component: () => import('@/modules/todos/PageTodos.vue'),
+        component: () => import('@/modules/todos/Page.vue'),
         meta: {
           nameRu: 'Заметки',
           // layout: "NavigationLayout",

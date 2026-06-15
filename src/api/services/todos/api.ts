@@ -1,6 +1,6 @@
 import { API } from '@/app/configs';
 
-export const todosService = {
+export const serviceTodos = {
   getList: (idProject: any, limit = 10, offset = 0, total = null) => {
     return API({
       url: `/project/${idProject}/todos`,
@@ -18,20 +18,21 @@ export const todosService = {
       method: 'DELETE',
     });
   },
-  // createTodo: (idProject, name: string, description: string) => {
+  createTodo: (idProject: any, name: string, description: string) => {
+    return API({
+      url: `/project/${idProject}/todos`,
+      method: 'POST',
+      data: {
+        name: name,
+        description: description,
+      },
+    });
+  },
+  //TODO не работает фронт + бек починить и сделать патч
+  // putByIdTodo: (idProject: any, name: string, description: string) => {
   //   return API({
   //     url: `/project/${idProject}/todos`,
-  //     method: "POST",
-  //     data: {
-  //       name: name,
-  //       description: description,
-  //     },
-  //   });
-  // },
-  // putByIdTodo: (idProject, name: string, description: string) => {
-  //   return API({
-  //     url: `/project/${idProject}/todos`,
-  //     method: "POST",
+  //     method: 'PUT',
   //     data: {
   //       name: name,
   //       description: description,
