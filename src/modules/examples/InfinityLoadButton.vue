@@ -32,11 +32,11 @@ const allProjects = computed(() => {
 <template>
   <div style="height: 400px; overflow: scroll; background: gray">
     <Page
-      :isLoading="isLoading"
-      :isError="isError"
+      :isLoadingContent="isLoading"
+      :isErrorContent="isError"
       :isEmptyContent="allProjects.length === 0"
     >
-      <template #notEmptyBodyContent>
+      <template #contentBody>
         <v-container>
           <v-row>
             <v-col

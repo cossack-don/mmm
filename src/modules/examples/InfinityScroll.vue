@@ -31,11 +31,11 @@ const allProjects = computed(() => {
     ref="refScrollContainer"
   >
     <Page
-      :isLoading="isLoading"
-      :isError="isError"
+      :isLoadingContent="isLoading"
+      :isErrorContent="isError"
       :isEmptyContent="allProjects.length === 0"
     >
-      <template #notEmptyBodyContent>
+      <template #contentBody>
         <v-container>
           <v-row>
             <v-col

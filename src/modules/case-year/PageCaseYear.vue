@@ -59,9 +59,12 @@ const route = useRoute();
 
 // ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ======
 // TODO CRUD list case year
-const { data: listCaseYear, isPending: isLoadingCaseYear } = useQuery(
-  caseYearGetQuery.GET_LIST(route)
-);
+const {
+  data: listCaseYear,
+  isPending: isLoadingCaseYear,
+  isError,
+} = useQuery(caseYearGetQuery.GET_LIST(route));
+
 const { mutate: deleteByIdCaseYearTask } = useMutation(
   caseYearDeleteQuery.DELETE
 );
@@ -230,10 +233,12 @@ const { pushMessageSnackBar } = useStoreSnackBar();
 </script>
 
 <template>
-  <Page :isLoading="false" :isError="false" :isEmptyContent="false">
-    <template #pageError> error content </template>
-
-    <template #headerContent>
+  <Page
+    :isLoadingContent="isLoadingCaseYear"
+    :isErrorContent="isError"
+    :isEmptyContent="listCaseYear?.length === 0"
+  >
+    <template #contentHeader>
       <v-container fluid>
         <v-row>
           <v-col cols="12" sm="12" md="12">
@@ -267,7 +272,7 @@ const { pushMessageSnackBar } = useStoreSnackBar();
       </v-container>
     </template>
 
-    <template #notEmptyBodyContent>
+    <template #contentBody>
       <v-container fluid>
         <v-row>
           <v-col cols="12" sm="12" md="12">

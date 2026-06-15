@@ -78,13 +78,13 @@ const listProjects = [
 const baseLinks = [
   {
     id: 1,
-    name: 'Дашборд',
+    name: '💟 Дашборд',
     icon: 'mdi-view-dashboard',
     link: 'dashboard',
   },
   {
     id: 2,
-    name: 'Дела на год',
+    name: '💟 Дела на год',
     icon: 'mdi-calendar-today',
     link: 'case-year',
   },
@@ -96,7 +96,7 @@ const baseLinks = [
   },
   {
     id: 4,
-    name: 'Заметки',
+    name: '💟 Заметки',
     icon: 'mdi-note-multiple',
     link: 'todos',
   },
