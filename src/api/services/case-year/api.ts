@@ -1,13 +1,21 @@
 import { API } from '@/app/configs';
 
-export const caseYearService = {
+export const serviceCaseYear = {
   getList: (idProject: string | number) => {
     return API({
       url: `/project/${idProject}/case-year`,
       method: 'GET',
     });
   },
-  createTaskQ: (
+
+  deleteById: (idProject: number | string, idTaskQ: string | number) => {
+    return API({
+      url: `/project/${idProject}/case-year/${idTaskQ}`,
+      method: 'DELETE',
+    });
+  },
+
+  create: (
     idProject: string | number,
     name: string,
     keyQ: string,
@@ -23,18 +31,7 @@ export const caseYearService = {
       },
     });
   },
-  deleteById: (idProject: number | string, idTaskQ: string | number) => {
-    return API({
-      url: `/project/${idProject}/case-year/${idTaskQ}`,
-      method: 'DELETE',
-    });
-  },
-  getById: (idProject: number | string, idTaskQ: string | number) => {
-    return API({
-      url: `/project/${idProject}/case-year/${idTaskQ}`,
-      method: 'GET',
-    });
-  },
+
   putById: (
     idProject: number | string,
     idTaskQ: string | number,
@@ -50,6 +47,13 @@ export const caseYearService = {
         keyQ: pickedQ,
         month: month,
       },
+    });
+  },
+
+  getById: (idProject: number | string, idTaskQ: string | number) => {
+    return API({
+      url: `/project/${idProject}/case-year/${idTaskQ}`,
+      method: 'GET',
     });
   },
 };

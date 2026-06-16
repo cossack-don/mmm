@@ -3,20 +3,8 @@ import { computed, ref } from 'vue';
 import { ReusableModal, ReusableListOptions } from '@components-ui';
 import { Page } from '@components-pages';
 import { useRoute } from 'vue-router';
-import { useQuery, useMutation } from '@tanstack/vue-query';
-import {
-  caseYearDeleteQuery,
-  caseYearPostQuery,
-  caseYearPutQuery,
-  caseYearGetQuery,
-} from '@/modules/case-year/query/case-year/index.ts';
 import { listMonths, Q } from './static.ts';
-import {
-  caseYearTargetsDeleteQuery,
-  caseYearTargetsGetQuery,
-  caseYearTargetsPostQuery,
-  caseYearTargetsPutQuery,
-} from '@/modules/case-year/query/case-year-targets/index.ts';
+
 // import { chainRequestsQuery } from './query/chain-requests.query.ts';
 
 const route = useRoute();
@@ -58,33 +46,23 @@ const route = useRoute();
 // );
 
 // ====== ====== ====== ====== ====== ====== ====== ====== ====== ====== ======
-// TODO CRUD list case year
 const {
-  data: listCaseYear,
-  isPending: isLoadingCaseYear,
-  isError,
-} = useQuery(caseYearGetQuery.GET_LIST(route));
+  listCaseYear,
+  isLoadingCaseYear,
+  isErrorCaseYear,
+  deleteByIdCaseYear,
+  createCaseYear,
+  putByIdCaseYear,
+} = useCaseYear(route);
 
-const { mutate: deleteByIdCaseYearTask } = useMutation(
-  caseYearDeleteQuery.DELETE
-);
-const { mutate: putByIdCaseYearTask } = useMutation(caseYearPutQuery.PUT);
-const { mutate: createCaseYearTask } = useMutation(caseYearPostQuery.POST);
-
-const { data: listCaseYearTargets, isPending: isLoadingCaseYearTargets } =
-  useQuery(caseYearTargetsGetQuery.GET_LIST(route));
-
-const { mutate: deleteByIdCaseYearTarget } = useMutation(
-  caseYearTargetsDeleteQuery.DELETE
-);
-
-const { mutate: putByIdCaseYearTarget } = useMutation(
-  caseYearTargetsPutQuery.PUT()
-);
-
-const { mutate: createCaseYearTarget } = useMutation(
-  caseYearTargetsPostQuery.POST
-);
+const {
+  listCaseYearTargets,
+  isLoadingCaseYearTargets,
+  isErrorCaseYearTargets,
+  deleteByIdCaseYearTarget,
+  createCaseYearTarget,
+  putByIdCaseYearTarget,
+} = useCaseYearTargets(route);
 
 const onDeleteByIdTargetYear = (id: number) => {
   deleteByIdCaseYearTarget(
@@ -101,13 +79,6 @@ const onDeleteByIdTargetYear = (id: number) => {
       },
     }
   );
-};
-
-const onDeleteByIdTask = (task) => {
-  deleteByIdCaseYearTask({
-    idProject: route.params.idProject,
-    idTask: task.id,
-  });
 };
 
 const mapTypesModal = {
@@ -199,7 +170,7 @@ const onSaveTask = () => {
   if (dataFrom.value.name.trim() === '') return;
 
   if (dataFrom.value.type === mapTypesModal.create) {
-    createCaseYearTask({
+    createCaseYear({
       idProject: route.params.idProject,
       name: dataFrom.value.name,
       pickedQ: dataFrom.value.quarter,
@@ -207,7 +178,7 @@ const onSaveTask = () => {
     });
   } else if (dataFrom.value.type === mapTypesModal.update) {
     console.log(dataFrom.value.month);
-    putByIdCaseYearTask({
+    putByIdCaseYear({
       idProject: route.params.idProject,
       idTask: dataFrom.value.id,
       name: dataFrom.value.name,
@@ -228,6 +199,8 @@ const onUpdateByIdTask = (quarter, monthId, task) => {
 };
 
 import { useStoreSnackBar } from '@/app/store';
+import { useCaseYear } from '@/api/services/case-year/useCaseYear.ts';
+import { useCaseYearTargets } from '@/api/services/case-year-targets/useCaseYearTargets.ts';
 
 const { pushMessageSnackBar } = useStoreSnackBar();
 </script>
@@ -235,8 +208,10 @@ const { pushMessageSnackBar } = useStoreSnackBar();
 <template>
   <Page
     :isLoadingContent="isLoadingCaseYear"
-    :isErrorContent="isError"
+    :isErrorContent="isErrorCaseYear"
     :isEmptyContent="listCaseYear?.length === 0"
+    :isLoadingHeader="isLoadingCaseYearTargets"
+    :isErrorHeader="isErrorCaseYearTargets"
   >
     <template #contentHeader>
       <v-container fluid>
@@ -320,7 +295,13 @@ const { pushMessageSnackBar } = useStoreSnackBar();
                               {{ task.name }}
                             </span>
                             <ReusableListOptions
-                              @onDelete="onDeleteByIdTask(task)"
+                              @onDelete="
+                                ({ id }) =>
+                                  deleteByIdCaseYear({
+                                    idProject: route.params.idProject,
+                                    idTask: id,
+                                  })
+                              "
                               @onEdit="onUpdateByIdTask(Q, month.id, task)"
                             />
                           </li>

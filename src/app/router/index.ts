@@ -1,4 +1,5 @@
 import { routerAuth } from '@/modules/auth/router';
+import { routerCaseYear } from '@/modules/case-year/router';
 import { routerExamples } from '@/modules/examples/router';
 import { routerFinances } from '@/modules/finances/router';
 import { routerProjects } from '@/modules/projects/router';
@@ -46,15 +47,7 @@ export const routes = [
           // layout: "NavigationLayout", //layout: "DefaultLayout",
         },
       },
-      {
-        path: 'case-year',
-        name: 'case-year',
-        component: () => import('@/modules/case-year/PageCaseYear.vue'),
-        meta: {
-          nameRu: 'Дела на год и кварталы',
-          // layout: "NavigationLayout",
-        },
-      },
+      routerCaseYear,
 
       {
         path: 'todos',

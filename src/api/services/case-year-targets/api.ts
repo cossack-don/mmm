@@ -1,13 +1,21 @@
 import { API } from '@/app/configs';
 
-export const caseYearTargetsService = {
+export const serviceCaseYearTargets = {
   getList: (idProject: string | number) => {
     return API({
       url: `/project/${idProject}/case-year-targets`,
       method: 'GET',
     });
   },
-  createTarget: (idProject: string | number, name: string) => {
+
+  deleteById: (idProject: number | string, idTarget: string | number) => {
+    return API({
+      url: `/project/${idProject}/case-year-targets/${idTarget}`,
+      method: 'DELETE',
+    });
+  },
+
+  create: (idProject: string | number, name: string) => {
     return API({
       url: `/project/${idProject}/case-year-targets`,
       method: 'POST',
@@ -16,18 +24,7 @@ export const caseYearTargetsService = {
       },
     });
   },
-  deleteById: (idProject: number | string, idTarget: string | number) => {
-    return API({
-      url: `/project/${idProject}/case-year-targets/${idTarget}`,
-      method: 'DELETE',
-    });
-  },
-  getById: (idProject: number | string, idTarget: string | number) => {
-    return API({
-      url: `/project/${idProject}/case-year-targets/${idTarget}`,
-      method: 'GET',
-    });
-  },
+
   putById: (
     idProject: number | string,
     idTarget: string | number,
@@ -39,6 +36,13 @@ export const caseYearTargetsService = {
       data: {
         name: name,
       },
+    });
+  },
+
+  getById: (idProject: number | string, idTarget: string | number) => {
+    return API({
+      url: `/project/${idProject}/case-year-targets/${idTarget}`,
+      method: 'GET',
     });
   },
 };
